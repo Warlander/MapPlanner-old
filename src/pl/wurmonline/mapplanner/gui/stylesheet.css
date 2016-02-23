@@ -1,0 +1,11 @@
+.gui-button {
+    -fx-padding: 4;
+}
+
+.gui-button:hover {
+    -fx-background-color: lightblue;
+}
+
+.gui-button:pressed {
+    -fx-background-color: lightsteelblue;
+}

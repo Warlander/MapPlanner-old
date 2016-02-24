@@ -59,6 +59,8 @@ public class InputsPane extends GridPane {
                 else if (newValue == ArgumentState.PARAMETER) {
                     mainPane.getParametersBox().addParameter(arg);
                 }
+                
+                arg.setState(newValue);
             });
             
             add(titleLabel, 0, currentArg);

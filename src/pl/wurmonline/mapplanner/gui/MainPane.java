@@ -1,5 +1,7 @@
 package pl.wurmonline.mapplanner.gui;
 
+import pl.wurmonline.mapplanner.gui.nodes.BlueprintNode;
+import pl.wurmonline.mapplanner.gui.nodes.ParametersBox;
 import javafx.event.ActionEvent;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -20,11 +22,11 @@ import pl.wurmonline.mapplanner.blocks.Blocks;
 
 public class MainPane extends BorderPane {
     
-    private final DiagramPane diagramPane;
+    private final BlueprintNode diagramPane;
     private final ParametersBox parametersBox;
     
     public MainPane() {
-        diagramPane = new DiagramPane(this);
+        diagramPane = new BlueprintNode(this);
         setCenter(diagramPane);
         
         parametersBox = new ParametersBox();
@@ -267,7 +269,7 @@ public class MainPane extends BorderPane {
         stage.close();
     }
     
-    public DiagramPane getDiagramPane() {
+    public BlueprintNode getDiagramPane() {
         return diagramPane;
     }
     

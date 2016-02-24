@@ -3,11 +3,11 @@ package pl.wurmonline.mapplanner.gui;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import static pl.wurmonline.mapplanner.GUIConstants.*;
-import pl.wurmonline.mapplanner.gui.nodes.GUIBlock;
+import pl.wurmonline.mapplanner.gui.nodes.BlockNode;
 
 public class FXUtils {
     
-    public static void makeDraggable(final GUIBlock block, final Node draggable) {
+    public static void makeDraggable(final BlockNode block, final Node draggable) {
         final DragContext dragContext = new DragContext();
 
         draggable.addEventFilter(MouseEvent.MOUSE_PRESSED, (final MouseEvent mouseEvent) -> {

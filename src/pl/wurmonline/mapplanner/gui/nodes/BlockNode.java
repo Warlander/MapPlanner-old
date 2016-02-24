@@ -27,21 +27,20 @@ import pl.wurmonline.mapplanner.blocks.Block;
 import static pl.wurmonline.mapplanner.GUIConstants.*;
 import pl.wurmonline.mapplanner.blocks.Argument;
 import pl.wurmonline.mapplanner.gui.ContextMenuCreator;
-import pl.wurmonline.mapplanner.gui.DiagramPane;
 import pl.wurmonline.mapplanner.gui.FXUtils;
 import pl.wurmonline.mapplanner.gui.InputsPane;
 
-public class GUIBlock extends BorderPane implements ContextMenuCreator {
+public class BlockNode extends BorderPane implements ContextMenuCreator {
     
     private Stage inputsStage;
-    private final DiagramPane root;
+    private final BlueprintNode root;
     
     private final Block block;
-    private final ArrayList<GUIArgument> argumentsList;
+    private final ArrayList<ArgumentNode> argumentsList;
     
     private final VBox inputsBox;
     
-    public GUIBlock(DiagramPane root, Block block) {
+    public BlockNode(BlueprintNode root, Block block) {
         this.root = root;
         this.block = block;
         this.argumentsList = new ArrayList<>();
@@ -64,7 +63,7 @@ public class GUIBlock extends BorderPane implements ContextMenuCreator {
         inputsBox = new VBox(2);
         Arrays.stream(block.getInputs())
                 .filter(arg -> arg.getState() == ArgumentState.EXTERNAL)
-                .map(arg -> new GUIArgument(root, this, arg, GUIArgument.Type.INPUT))
+                .map(arg -> new ArgumentNode(root, this, arg, ArgumentNode.Type.INPUT))
                 .forEach(arg -> {
                     inputsBox.getChildren().add(arg);
                     argumentsList.add(arg);
@@ -82,7 +81,7 @@ public class GUIBlock extends BorderPane implements ContextMenuCreator {
         
         VBox outputsBox = new VBox(2);
         Arrays.stream(block.getOutputs())
-                .map(arg -> new GUIArgument(root, this, arg, GUIArgument.Type.OUTPUT))
+                .map(arg -> new ArgumentNode(root, this, arg, ArgumentNode.Type.OUTPUT))
                 .forEach(arg -> {
                     outputsBox.getChildren().add(arg);
                     argumentsList.add(arg);
@@ -92,7 +91,7 @@ public class GUIBlock extends BorderPane implements ContextMenuCreator {
     }
     
     final void updateAllLinks() {
-        argumentsList.forEach((GUIArgument arg) -> arg.updateLinks());
+        argumentsList.forEach((ArgumentNode arg) -> arg.updateLinks());
     }
 
     public ContextMenu createContextMenu(ContextMenuEvent evt) {
@@ -133,7 +132,7 @@ public class GUIBlock extends BorderPane implements ContextMenuCreator {
         return menu;
     }
     
-    public DiagramPane getPanel() {
+    public BlueprintNode getPanel() {
         return root;
     }
     
@@ -148,7 +147,7 @@ public class GUIBlock extends BorderPane implements ContextMenuCreator {
             throw new IllegalArgumentException("Added input must belong to the same block");
         }
         
-        GUIArgument guiArg = new GUIArgument(root, this, arg, GUIArgument.Type.INPUT);
+        ArgumentNode guiArg = new ArgumentNode(root, this, arg, ArgumentNode.Type.INPUT);
         
         inputsBox.getChildren().add(guiArg);
         argumentsList.add(guiArg);
@@ -160,10 +159,10 @@ public class GUIBlock extends BorderPane implements ContextMenuCreator {
         }
         
         for (int i = 0; i < argumentsList.size(); i++) {
-            GUIArgument guiArg = argumentsList.get(i);
+            ArgumentNode guiArg = argumentsList.get(i);
             guiArg.unbind();
             
-            if (guiArg.getArgument() == arg && guiArg.getType() == GUIArgument.Type.INPUT) {
+            if (guiArg.getArgument() == arg && guiArg.getType() == ArgumentNode.Type.INPUT) {
                 inputsBox.getChildren().remove(guiArg);
                 argumentsList.remove(i);
                 return;

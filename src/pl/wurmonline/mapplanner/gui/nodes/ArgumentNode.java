@@ -13,22 +13,21 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.CubicCurve;
 import pl.wurmonline.mapplanner.blocks.Argument;
 import static pl.wurmonline.mapplanner.GUIConstants.*;
-import pl.wurmonline.mapplanner.gui.DiagramPane;
 
-public class GUIArgument extends VBox {    
+public class ArgumentNode extends VBox {    
     
-    private final DiagramPane root;
-    private final GUIBlock parent;
+    private final BlueprintNode root;
+    private final BlockNode parent;
     
     private final Node editor;
     private final Circle circle;
     
     private final Argument argument;
     private final Type type;
-    private GUIArgument boundArgument;
+    private ArgumentNode boundArgument;
     private CubicCurve bindCurve;
     
-    public GUIArgument(DiagramPane root, GUIBlock parent, Argument argument, Type type) {
+    public ArgumentNode(BlueprintNode root, BlockNode parent, Argument argument, Type type) {
         if (root == null || argument == null || type == null) {
             throw new IllegalArgumentException("Argument or type cannot be null");
         }
@@ -76,13 +75,13 @@ public class GUIArgument extends VBox {
         });
     }
     
-    public void bind(GUIArgument arg) {
+    public void bind(ArgumentNode arg) {
         if (this.type == arg.type || this.parent == arg.parent || this.argument.getData().getClass() != arg.argument.getData().getClass()) {
             return;
         }
         
-        GUIArgument guiInput = (type == Type.INPUT) ? this : arg;
-        GUIArgument guiOutput = (type == Type.OUTPUT) ? this : arg;
+        ArgumentNode guiInput = (type == Type.INPUT) ? this : arg;
+        ArgumentNode guiOutput = (type == Type.OUTPUT) ? this : arg;
         
         this.boundArgument = arg;
         arg.boundArgument = this;
@@ -122,8 +121,8 @@ public class GUIArgument extends VBox {
             return;
         }
         
-        GUIArgument guiInput = (type == Type.INPUT) ? this : boundArgument;
-        GUIArgument guiOutput = (type == Type.OUTPUT) ? this : boundArgument;
+        ArgumentNode guiInput = (type == Type.INPUT) ? this : boundArgument;
+        ArgumentNode guiOutput = (type == Type.OUTPUT) ? this : boundArgument;
         
         guiInput.boundArgument = null;
         guiOutput.boundArgument = null;
@@ -154,8 +153,8 @@ public class GUIArgument extends VBox {
             return;
         }
         
-        GUIArgument guiInput = (type == Type.INPUT) ? this : boundArgument;
-        GUIArgument guiOutput = (type == Type.OUTPUT) ? this : boundArgument;
+        ArgumentNode guiInput = (type == Type.INPUT) ? this : boundArgument;
+        ArgumentNode guiOutput = (type == Type.OUTPUT) ? this : boundArgument;
         
         Point2D inputCircle = guiInput.localToScene(new Point2D(guiInput.getCircleX() - parent.getPanel().getLayoutX(), guiInput.getCircleY() - parent.getPanel().getLayoutY()));
         Point2D outputCircle = guiOutput.localToScene(new Point2D(guiOutput.getCircleX() - parent.getPanel().getLayoutX(), guiOutput.getCircleY() - parent.getPanel().getLayoutY()));

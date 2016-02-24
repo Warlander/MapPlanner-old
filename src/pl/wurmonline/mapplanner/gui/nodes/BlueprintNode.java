@@ -1,10 +1,10 @@
-package pl.wurmonline.mapplanner.gui;
+package pl.wurmonline.mapplanner.gui.nodes;
 
 import javafx.collections.FXCollections;
 
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableMap;
-import pl.wurmonline.mapplanner.gui.nodes.GUIBlock;
+import pl.wurmonline.mapplanner.gui.nodes.BlockNode;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -27,18 +27,20 @@ import pl.wurmonline.mapplanner.blocks.Blueprint;
 import pl.wurmonline.mapplanner.blocks.Toolbox;
 import pl.wurmonline.mapplanner.blocks.Blocks;
 import pl.wurmonline.mapplanner.blocks.blocks.mapinit.CreateMap;
-import pl.wurmonline.mapplanner.gui.nodes.GUIArgument;
+import pl.wurmonline.mapplanner.gui.ContextMenuCreator;
+import pl.wurmonline.mapplanner.gui.MainPane;
+import pl.wurmonline.mapplanner.gui.nodes.ArgumentNode;
 
-public final class DiagramPane extends AnchorPane implements ContextMenuCreator {
+public final class BlueprintNode extends AnchorPane implements ContextMenuCreator {
     
     private final MainPane mainPane;
     
     private final Group group;
     
     private final Blueprint blueprint;
-    private final ObservableMap<Block, GUIBlock> blocksMap;
+    private final ObservableMap<Block, BlockNode> blocksMap;
     
-    public DiagramPane(MainPane mainPane) {
+    public BlueprintNode(MainPane mainPane) {
         this.mainPane = mainPane;
         
         blueprint = new Blueprint();
@@ -47,7 +49,7 @@ public final class DiagramPane extends AnchorPane implements ContextMenuCreator 
         blueprint.addToolbox(toolbox);
         blocksMap = FXCollections.observableHashMap();
         
-        BackgroundImage background = new BackgroundImage(new Image(DiagramPane.class.getResourceAsStream("background.png")),
+        BackgroundImage background = new BackgroundImage(new Image(BlueprintNode.class.getResourceAsStream("background.png")),
             BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         setBackground(new Background(background));
         
@@ -106,7 +108,7 @@ public final class DiagramPane extends AnchorPane implements ContextMenuCreator 
         return menu;
     }
     
-    public void handleNewBind(GUIArgument start) {
+    public void handleNewBind(ArgumentNode start) {
         start.unbind();
         
         CubicCurve newBindCurve = new CubicCurve();
@@ -147,17 +149,17 @@ public final class DiagramPane extends AnchorPane implements ContextMenuCreator 
                 parent = evt.getPickResult().getIntersectedNode().getParent();
             }
             
-            if (parent != null && !(parent instanceof GUIArgument)) {
+            if (parent != null && !(parent instanceof ArgumentNode)) {
                 while (parent.getParent() != null) {
                     parent = parent.getParent();
-                    if (parent instanceof GUIArgument) {
+                    if (parent instanceof ArgumentNode) {
                         break;
                     }
                 }
             }
 
-            if (parent instanceof GUIArgument) {
-                GUIArgument arg = (GUIArgument) parent;
+            if (parent instanceof ArgumentNode) {
+                ArgumentNode arg = (ArgumentNode) parent;
                 arg.bind(start);
             }
         };
@@ -170,14 +172,14 @@ public final class DiagramPane extends AnchorPane implements ContextMenuCreator 
     }
     
     private void addBlock(Block block) {
-        GUIBlock newGuiBlock = new GUIBlock(this, block);
+        BlockNode newGuiBlock = new BlockNode(this, block);
         
         group.getChildren().add(newGuiBlock);
         blocksMap.put(block, newGuiBlock);
     }
     
     private void removeBlock(Block block) {
-        GUIBlock guiBlock = blocksMap.get(block);
+        BlockNode guiBlock = blocksMap.get(block);
         
         group.getChildren().remove(guiBlock);
         blocksMap.remove(block);
@@ -187,7 +189,7 @@ public final class DiagramPane extends AnchorPane implements ContextMenuCreator 
         return blueprint;
     }
     
-    public GUIBlock getBlock(Block block) {
+    public BlockNode getBlock(Block block) {
         return blocksMap.get(block);
     }
     

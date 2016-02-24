@@ -1,4 +1,4 @@
-package pl.wurmonline.mapplanner.gui;
+package pl.wurmonline.mapplanner.gui.nodes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class ParametersBox extends VBox {
     
     private final Label emptyLabel;
     
-    ParametersBox() {
+    public ParametersBox() {
         setMaxWidth(200);
         setPrefWidth(200);
         

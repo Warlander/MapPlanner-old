@@ -3,6 +3,7 @@ package pl.wurmonline.mapplanner.blocks;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import static pl.wurmonline.mapplanner.GUIConstants.GRID_SIZE;
 
 public class Blocks {
     
@@ -32,7 +33,11 @@ public class Blocks {
             
             currentCategory.add(new MenuItem(data.getDefaultTitle()) {{
             this.setOnAction((e) -> {
-                blueprint.addBlock(data.getClass());
+                Block block = blueprint.addBlock(data.getClass());
+                int gridX = (int) Math.round(posX / GRID_SIZE);
+                int gridY = (int) Math.round(posY / GRID_SIZE);
+                block.setGridX(gridX);
+                block.setGridY(gridY);
             });
         }});
         }

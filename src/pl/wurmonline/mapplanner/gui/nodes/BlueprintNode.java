@@ -29,7 +29,6 @@ import pl.wurmonline.mapplanner.blocks.Blocks;
 import pl.wurmonline.mapplanner.blocks.blocks.mapinit.CreateMap;
 import pl.wurmonline.mapplanner.gui.ContextMenuCreator;
 import pl.wurmonline.mapplanner.gui.MainPane;
-import pl.wurmonline.mapplanner.gui.nodes.ArgumentNode;
 
 public final class BlueprintNode extends AnchorPane implements ContextMenuCreator {
     
@@ -49,7 +48,7 @@ public final class BlueprintNode extends AnchorPane implements ContextMenuCreato
         blueprint.addToolbox(toolbox);
         blocksMap = FXCollections.observableHashMap();
         
-        BackgroundImage background = new BackgroundImage(new Image(BlueprintNode.class.getResourceAsStream("background.png")),
+        BackgroundImage background = new BackgroundImage(new Image(BlueprintNode.class.getResourceAsStream("/pl/wurmonline/mapplanner/gui/background.png")),
             BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         setBackground(new Background(background));
         

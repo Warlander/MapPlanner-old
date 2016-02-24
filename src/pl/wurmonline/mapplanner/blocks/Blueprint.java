@@ -28,6 +28,7 @@ public final class Blueprint {
     
     private final List<Toolbox> toolboxes;
     private final ObservableList<Block> blocks;
+    private final ObservableList<Block> blocksImmutable;
     
     private final DoubleProperty cameraX;
     private final DoubleProperty cameraY;
@@ -37,6 +38,7 @@ public final class Blueprint {
         
         this.toolboxes = new ArrayList<>();
         this.blocks = FXCollections.observableArrayList();
+        this.blocksImmutable = FXCollections.unmodifiableObservableList(blocks);
         
         this.cameraX = new SimpleDoubleProperty();
         this.cameraY = new SimpleDoubleProperty();
@@ -125,7 +127,7 @@ public final class Blueprint {
     }
     
     public ObservableList<Block> getChildrenUnmodifiable() {
-        return FXCollections.unmodifiableObservableList(blocks);
+        return blocksImmutable;
     }
     
     public Block addBlock(Class<? extends BlockData> dataClass) {

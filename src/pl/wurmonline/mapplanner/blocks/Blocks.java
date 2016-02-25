@@ -5,7 +5,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import pl.wurmonline.mapplanner.Constants;
 import static pl.wurmonline.mapplanner.GUIConstants.GRID_SIZE;
-import pl.wurmonline.mapplanner.blocks.blocks.SaveMap;
+import pl.wurmonline.mapplanner.blocks.blocks.mapinit.CreateMap;
 
 public class Blocks {
     
@@ -13,7 +13,7 @@ public class Blocks {
     
     static {
         CORE_TOOLBOX = new Toolbox("MapPlanner Core", Constants.VERSION_NUMBER);
-        CORE_TOOLBOX.registerBlockData(SaveMap.class);
+        CORE_TOOLBOX.registerBlockData(CreateMap.class);
     }
     
     public static Toolbox getCoreToolbox() {

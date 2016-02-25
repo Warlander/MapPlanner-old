@@ -42,9 +42,6 @@ public final class BlueprintPane extends AnchorPane implements ContextMenuCreato
         this.mainPane = mainPane;
         
         blueprint = new Blueprint();
-        Toolbox toolbox = new Toolbox("MapPlanner Core", 1);
-        toolbox.registerBlockData(CreateMap.class);
-        blueprint.addToolbox(toolbox);
         blocksMap = FXCollections.observableHashMap();
         
         BackgroundImage background = new BackgroundImage(new Image(BlueprintPane.class.getResourceAsStream("/pl/wurmonline/mapplanner/gui/background.png")),

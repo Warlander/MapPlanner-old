@@ -3,9 +3,22 @@ package pl.wurmonline.mapplanner.blocks;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import pl.wurmonline.mapplanner.Constants;
 import static pl.wurmonline.mapplanner.GUIConstants.GRID_SIZE;
+import pl.wurmonline.mapplanner.blocks.blocks.SaveMap;
 
 public class Blocks {
+    
+    private static final Toolbox CORE_TOOLBOX;
+    
+    static {
+        CORE_TOOLBOX = new Toolbox("MapPlanner Core", Constants.VERSION_NUMBER);
+        CORE_TOOLBOX.registerBlockData(SaveMap.class);
+    }
+    
+    public static Toolbox getCoreToolbox() {
+        return CORE_TOOLBOX;
+    }
     
     public static void fillCreationMenu(Blueprint blueprint, ObservableList<MenuItem> items, double posX, double posY) {
         for (BlockData data : blueprint.getAllRegisteredData()) {

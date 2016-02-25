@@ -42,6 +42,8 @@ public final class Blueprint {
         
         this.cameraX = new SimpleDoubleProperty();
         this.cameraY = new SimpleDoubleProperty();
+        
+        addToolbox(Blocks.getCoreToolbox());
     }
     
     public String serialize() throws ParserConfigurationException, TransformerException {

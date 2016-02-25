@@ -12,7 +12,7 @@ public class Main extends Application {
     }
     
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("MapPlanner PRE-ALPHA 5");
+        primaryStage.setTitle(Constants.VERSION_STRING);
         
         MainPane root = new MainPane();
         

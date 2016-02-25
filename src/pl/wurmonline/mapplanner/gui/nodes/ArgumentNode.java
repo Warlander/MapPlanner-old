@@ -16,7 +16,7 @@ import static pl.wurmonline.mapplanner.GUIConstants.*;
 
 public class ArgumentNode extends VBox {    
     
-    private final BlueprintNode root;
+    private final BlueprintPane root;
     private final BlockNode parent;
     
     private final Node editor;
@@ -27,7 +27,7 @@ public class ArgumentNode extends VBox {
     private ArgumentNode boundArgument;
     private CubicCurve bindCurve;
     
-    public ArgumentNode(BlueprintNode root, BlockNode parent, Argument argument, Type type) {
+    public ArgumentNode(BlueprintPane root, BlockNode parent, Argument argument, Type type) {
         if (root == null || argument == null || type == null) {
             throw new IllegalArgumentException("Argument or type cannot be null");
         }

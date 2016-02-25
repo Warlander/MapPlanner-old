@@ -33,14 +33,14 @@ import pl.wurmonline.mapplanner.gui.InputsPane;
 public class BlockNode extends BorderPane implements ContextMenuCreator {
     
     private Stage inputsStage;
-    private final BlueprintNode root;
+    private final BlueprintPane root;
     
     private final Block block;
     private final ArrayList<ArgumentNode> argumentsList;
     
     private final VBox inputsBox;
     
-    public BlockNode(BlueprintNode root, Block block) {
+    public BlockNode(BlueprintPane root, Block block) {
         this.root = root;
         this.block = block;
         this.argumentsList = new ArrayList<>();
@@ -132,7 +132,7 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
         return menu;
     }
     
-    public BlueprintNode getPanel() {
+    public BlueprintPane getPanel() {
         return root;
     }
     

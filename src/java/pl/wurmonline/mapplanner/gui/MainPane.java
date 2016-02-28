@@ -29,7 +29,7 @@ public class MainPane extends BorderPane {
         diagramPane = new BlueprintPane(this);
         setCenter(diagramPane);
         
-        parametersBox = new ParametersBox();
+        parametersBox = new ParametersBox(diagramPane.getBlueprint());
         setLeft(parametersBox);
         
         VBox top = createTopBar();

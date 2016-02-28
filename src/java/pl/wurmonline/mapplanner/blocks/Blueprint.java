@@ -28,7 +28,10 @@ public final class Blueprint {
     
     private final List<Toolbox> toolboxes;
     private final ObservableList<Block> blocks;
-    private final ObservableList<Block> blocksUnmodifiable;
+    private final ObservableList<Block> blocksReadonly;
+    
+    private final ObservableList<Argument> properties;
+    private final ObservableList<Argument> propertiesReadonly;
     
     private final DoubleProperty cameraX;
     private final DoubleProperty cameraY;
@@ -38,7 +41,10 @@ public final class Blueprint {
         
         this.toolboxes = new ArrayList<>();
         this.blocks = FXCollections.observableArrayList();
-        this.blocksUnmodifiable = FXCollections.unmodifiableObservableList(blocks);
+        this.blocksReadonly = FXCollections.unmodifiableObservableList(blocks);
+        
+        this.properties = FXCollections.observableArrayList();
+        this.propertiesReadonly = FXCollections.unmodifiableObservableList(properties);
         
         this.cameraX = new SimpleDoubleProperty();
         this.cameraY = new SimpleDoubleProperty();
@@ -128,8 +134,20 @@ public final class Blueprint {
         toolboxes.add(toolbox);
     }
     
-    public ObservableList<Block> getChildrenUnmodifiable() {
-        return blocksUnmodifiable;
+    public ObservableList<Argument> getPropertiesReadonly() {
+        return propertiesReadonly;
+    }
+    
+    protected void addProperty(Argument value) {
+        properties.add(value);
+    }
+    
+    protected void removeProperty(Argument value) {
+        properties.remove(value);
+    }
+    
+    public ObservableList<Block> getChildrenReadonly() {
+        return blocksReadonly;
     }
     
     public Block addBlock(Class<? extends BlockData> dataClass) {

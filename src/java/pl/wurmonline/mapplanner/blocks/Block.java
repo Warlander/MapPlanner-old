@@ -6,6 +6,8 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -18,6 +20,8 @@ public final class Block implements XMLSerializable {
     private final BlockData data;
     private final Argument[] inputs;
     private final Argument[] outputs;
+    private final ObservableList<Argument> externalInputs;
+    private final ObservableList<Argument> externalInputsReadonly;
     
     private final ProgressProperty progress;
     
@@ -30,6 +34,13 @@ public final class Block implements XMLSerializable {
         this.data = data;
         this.inputs = data.createInputs(this);
         this.outputs = data.createOutputs(this);
+        this.externalInputs = FXCollections.observableArrayList();
+        this.externalInputsReadonly = FXCollections.unmodifiableObservableList(externalInputs);
+        
+        Arrays.stream(inputs)
+                .filter((arg) -> arg.getState() == ArgumentState.EXTERNAL)
+                .forEach(externalInputs::add);
+        
         this.progress = new ProgressProperty();
         
         this.gridX = new SimpleIntegerProperty(0);
@@ -111,6 +122,18 @@ public final class Block implements XMLSerializable {
     
     public BlockData getData() {
         return data;
+    }
+    
+    public ObservableList<Argument> getExternalInputsReadonly() {
+        return externalInputsReadonly;
+    }
+    
+    protected void addExternalInput(Argument value) {
+        externalInputs.add(value);
+    }
+    
+    protected void removeExternalInput(Argument value) {
+        externalInputs.remove(value);
     }
     
     public Argument[] getInputs() {

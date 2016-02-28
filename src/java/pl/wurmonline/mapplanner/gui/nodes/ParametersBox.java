@@ -2,6 +2,9 @@ package pl.wurmonline.mapplanner.gui.nodes;
 
 import java.util.HashMap;
 import java.util.Map;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableMap;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -10,19 +13,25 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import pl.wurmonline.mapplanner.blocks.Argument;
-import pl.wurmonline.mapplanner.gui.nodes.TitleLabel;
+import pl.wurmonline.mapplanner.blocks.Blueprint;
 
 public class ParametersBox extends VBox {
     
-    private final Map<Argument, Node> parameterMappings;
+    private final ObservableMap<Argument, Node> parameterMappings;
     
     private final Label emptyLabel;
     
-    public ParametersBox() {
+    public ParametersBox(Blueprint blueprint) {
         setMaxWidth(200);
         setPrefWidth(200);
         
-        parameterMappings = new HashMap<>();
+        parameterMappings = FXCollections.observableHashMap();
+        blueprint.getPropertiesReadonly().addListener((ListChangeListener.Change<? extends Argument> c) -> {
+            while (c.next()) {
+                c.getAddedSubList().forEach(this::addParameter);
+                c.getRemoved().forEach(this::removeParameter);
+            }
+        });
         
         Label titleLabel = new Label("Generation parameters");
         titleLabel.setTextAlignment(TextAlignment.CENTER);
@@ -39,7 +48,7 @@ public class ParametersBox extends VBox {
         getChildren().add(emptyLabel);
     }
     
-    public void addParameter(Argument arg) {
+    private void addParameter(Argument arg) {
         if (parameterMappings.containsKey(arg)) {
             return;
         }
@@ -59,7 +68,7 @@ public class ParametersBox extends VBox {
         parameterMappings.put(arg, argPane);
     }
     
-    public void removeParameter(Argument arg) {
+    private void removeParameter(Argument arg) {
         getChildren().remove(parameterMappings.get(arg));
         parameterMappings.remove(arg);
         

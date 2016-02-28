@@ -1,5 +1,7 @@
 package pl.wurmonline.mapplanner.blocks;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
@@ -10,18 +12,42 @@ public final class Argument<T> {
     
     private final StringProperty title;
     private final Block block;
-    private ArgumentState state;
+    private final ObjectProperty<ArgumentState> state;
     private T value;
-    private Argument<T> input;
+    private final ObjectProperty<Argument<T>> input;
     
     private Node editor;
     
     Argument(Block block, ArgumentData<T> data) {
         this.title = new SimpleStringProperty(data.getDefaultTitle());
-        this.state = data.getDefaultState();
+        this.state = new SimpleObjectProperty<>(data.getDefaultState());
         this.block = block;
         this.data = data;
         this.value = null;
+        this.input = new SimpleObjectProperty<>();
+        
+        this.state.addListener((observable, oldValue, newValue) -> {
+            switch (oldValue) {
+                case EXTERNAL:
+                    if (input.get() != null) {
+                        input.set(null);
+                    }
+                    block.removeExternalInput(this);
+                    break;
+                case PARAMETER:
+                    block.getBlueprint().removeProperty(this);
+                    break;
+            }
+
+            switch (newValue) {
+                case EXTERNAL:
+                    block.addExternalInput(this);
+                    break;
+                case PARAMETER:
+                    block.getBlueprint().addProperty(this);
+                    break;
+            }
+        });
     }
     
     public ArgumentData<T> getData() {
@@ -40,16 +66,18 @@ public final class Argument<T> {
         return title.get();
     }
     
-    public final void setState(ArgumentState state) {
+    public ObjectProperty<ArgumentState> stateProperty() {
+        return state;
+    }
+    
+    public void setState(ArgumentState value) {
         if (data.isAlwaysExternal()) {
             return;
         }
-        
-        this.state = state;
     }
     
     public ArgumentState getState() {
-        return state;
+        return state.get();
     }
     
     public Block getBlock() {
@@ -57,8 +85,8 @@ public final class Argument<T> {
     }
     
     public T getValue() {
-        if (input != null) {
-            return input.getValue();
+        if (input.get() != null) {
+            return input.get().getValue();
         }
         return value;
     }
@@ -70,15 +98,19 @@ public final class Argument<T> {
         this.value = value;
     }
     
-    public Argument<T> getInput() {
+    public ObjectProperty<Argument<T>> inputProperty() {
         return input;
     }
     
-    public void setInput(Argument<T> input) {
-        if (input != null && (input.block == block || this == input)) {
+    public Argument<T> getInput() {
+        return input.get();
+    }
+    
+    public void setInput(Argument<T> value) {
+        if (value != null && (value.block == block || value == input.get())) {
             throw new IllegalArgumentException("Invalid recurrence: argument cannot point to another argument in the same block.");
         }
-        this.input = input;
+        input.set(value);
     }
     
     public Node getEditor() {

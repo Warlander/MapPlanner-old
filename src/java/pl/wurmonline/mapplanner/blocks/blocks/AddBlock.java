@@ -12,7 +12,7 @@ public class AddBlock extends BlockData {
         super("Value + Value",
                 new ArgumentData[] { 
                     new IntArgumentData("Value 1", true), 
-                    new IntArgumentData("Value 1", true) }, 
+                    new IntArgumentData("Value 2", true) }, 
                 new ArgumentData[] { 
                     new IntArgumentData("Value 1 + Value 2", true) });
     }

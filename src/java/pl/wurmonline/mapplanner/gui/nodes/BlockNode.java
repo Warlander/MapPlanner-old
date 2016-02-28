@@ -3,6 +3,7 @@ package pl.wurmonline.mapplanner.gui.nodes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
@@ -36,14 +37,16 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
     private final BlueprintPane root;
     
     private final Block block;
-    private final ArrayList<ArgumentNode> argumentsList;
+    private final ArrayList<ArgumentNode> inputsList;
+    private final ArrayList<ArgumentNode> outputsList;
     
     private final VBox inputsBox;
     
     public BlockNode(BlueprintPane root, Block block) {
         this.root = root;
         this.block = block;
-        this.argumentsList = new ArrayList<>();
+        this.inputsList = new ArrayList<>();
+        this.outputsList = new ArrayList<>();
         
         setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE), new Insets(-BORDER_SIZE))));
         setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY.deriveColor(1, 1, 1, 0.7), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -61,13 +64,18 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
         });
         
         inputsBox = new VBox(2);
-        Arrays.stream(block.getInputs())
-                .filter(arg -> arg.getState() == ArgumentState.EXTERNAL)
+        block.getExternalInputsReadonly().stream()
                 .map(arg -> new ArgumentNode(root, this, arg, ArgumentNode.Type.INPUT))
                 .forEach(arg -> {
                     inputsBox.getChildren().add(arg);
-                    argumentsList.add(arg);
+                    inputsList.add(arg);
                 });
+        block.getExternalInputsReadonly().addListener((ListChangeListener.Change<? extends Argument> c) -> {
+            while (c.next()) {
+                c.getAddedSubList().forEach(this::addInput);
+                c.getRemoved().forEach(this::removeInput);
+            }
+        });
         
         setLeft(inputsBox);
         
@@ -84,14 +92,15 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
                 .map(arg -> new ArgumentNode(root, this, arg, ArgumentNode.Type.OUTPUT))
                 .forEach(arg -> {
                     outputsBox.getChildren().add(arg);
-                    argumentsList.add(arg);
+                    outputsList.add(arg);
                 });
         
         setRight(outputsBox);
     }
     
     final void updateAllLinks() {
-        argumentsList.forEach((ArgumentNode arg) -> arg.updateLinks());
+        inputsList.forEach((ArgumentNode arg) -> arg.updateLinks());
+        outputsList.forEach((ArgumentNode arg) -> arg.updateLinks());
     }
 
     public ContextMenu createContextMenu(ContextMenuEvent evt) {
@@ -137,12 +146,15 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
     }
     
     public void destroy() {
-        argumentsList.stream().forEach((arg) -> {
+        inputsList.stream().forEach((arg) -> {
+            arg.destroy();
+        });
+        outputsList.stream().forEach((arg) -> {
             arg.destroy();
         });
     }
     
-    public void addInput(Argument arg) {
+    private void addInput(Argument arg) {
         if (arg.getBlock() != block) {
             throw new IllegalArgumentException("Added input must belong to the same block");
         }
@@ -150,21 +162,21 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
         ArgumentNode guiArg = new ArgumentNode(root, this, arg, ArgumentNode.Type.INPUT);
         
         inputsBox.getChildren().add(guiArg);
-        argumentsList.add(guiArg);
+        inputsList.add(guiArg);
     }
     
-    public void removeInput(Argument arg) {
+    private void removeInput(Argument arg) {
         if (arg.getBlock() != block) {
             return;
         }
         
-        for (int i = 0; i < argumentsList.size(); i++) {
-            ArgumentNode guiArg = argumentsList.get(i);
+        for (int i = 0; i < inputsList.size(); i++) {
+            ArgumentNode guiArg = inputsList.get(i);
             guiArg.unbind();
             
             if (guiArg.getArgument() == arg && guiArg.getType() == ArgumentNode.Type.INPUT) {
                 inputsBox.getChildren().remove(guiArg);
-                argumentsList.remove(i);
+                inputsList.remove(i);
                 return;
             }
         }

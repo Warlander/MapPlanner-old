@@ -26,7 +26,7 @@ public final class Toolbox implements XMLSerializable {
     }
     
     public boolean isUsedIn(Blueprint blueprint) {
-        return blueprint.getChildrenUnmodifiable().stream()
+        return blueprint.getChildrenReadonly().stream()
                 .map((Block block) -> block.getData())
                 .anyMatch((BlockData data) -> blocksData.values().contains(data));
     }

@@ -39,28 +39,14 @@ public class InputsPane extends GridPane {
             ChoiceBox<ArgumentState> argumentTypeBox = new ChoiceBox<>();
             argumentTypeBox.setItems(FXCollections.observableArrayList(ArgumentState.values()));
             argumentTypeBox.getSelectionModel().select(arg.getState());
-            argumentTypeBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-                if (oldValue == ArgumentState.EXTERNAL) {
-                    mainPane.getDiagramPane().getBlock(block).removeInput(arg);
-                }
-                else if (oldValue == ArgumentState.INTERNAL) {
+            arg.stateProperty().bind(argumentTypeBox.getSelectionModel().selectedItemProperty());
+            arg.stateProperty().addListener((observable, oldValue, newValue) -> {
+                if (oldValue == ArgumentState.INTERNAL) {
                     getChildren().remove(editor);
                 }
-                else if (oldValue == ArgumentState.PARAMETER) {
-                    mainPane.getParametersBox().removeParameter(arg);
-                }
-                
-                if (newValue == ArgumentState.EXTERNAL) {
-                    mainPane.getDiagramPane().getBlock(block).addInput(arg);
-                }
-                else if (newValue == ArgumentState.INTERNAL) {
+                if (newValue == ArgumentState.INTERNAL) {
                     add(editor, 2, currentArg);
                 }
-                else if (newValue == ArgumentState.PARAMETER) {
-                    mainPane.getParametersBox().addParameter(arg);
-                }
-                
-                arg.setState(newValue);
             });
             
             add(titleLabel, 0, currentArg);

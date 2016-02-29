@@ -106,12 +106,6 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
     public ContextMenu createContextMenu(ContextMenuEvent evt) {
         ContextMenu menu = new ContextMenu();
         
-        menu.getItems().add(new MenuItem("Execute Block") {{
-            this.setOnAction((e) -> {
-                block.run();
-            });
-        }});
-        
         menu.getItems().add(new MenuItem("Delete") {{
             this.setOnAction((e) -> {
                 destroy();

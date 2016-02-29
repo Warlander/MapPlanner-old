@@ -28,6 +28,9 @@ public final class Block implements XMLSerializable {
     private final IntegerProperty gridX;
     private final IntegerProperty gridY;
     
+    private boolean executed;
+    private final Object executionLock;
+    
     Block(Blueprint blueprint, BlockData data) {
         this.blueprint = blueprint;
         this.title = new SimpleStringProperty(data.getDefaultTitle());
@@ -41,43 +44,43 @@ public final class Block implements XMLSerializable {
                 .filter((arg) -> arg.getState() == ArgumentState.EXTERNAL)
                 .forEach(externalInputs::add);
         
-        this.progress = new ProgressProperty();
+        this.progress = new ProgressProperty(this);
         
         this.gridX = new SimpleIntegerProperty(0);
         this.gridY = new SimpleIntegerProperty(0);
+        
+        executionLock = new Object();
     }
     
     public Element serialize(Document doc) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    private BlocksStack createExecutionStack() {
-        BlocksStack stack = new BlocksStack();
-        addToExecutionStack(stack);
-        
-        return stack;
-    }
-    
-    private void addToExecutionStack(BlocksStack stack) {
-        stack.push(this);
-        
-        for (Argument arg : inputs) {
-            if (arg.getInput() != null) {
-                arg.getInput().getBlock().addToExecutionStack(stack);
-            }
-        }
-    }
-    
-    public void run() {
-        createExecutionStack().execute();
-    }
-    
     void execute() {
+        externalInputs.stream()
+                .filter((externalInput) -> externalInput.getInput() != null)
+                .forEach((externalInput) -> externalInput.getInput().getBlock().waitForExecution());
+        
         Object[] in = Arrays.stream(inputs).map((Argument arg) -> arg.getValue()).toArray();
         
         progress.set(0);
         data.execute(in, outputs, progress);
         progress.set(1);
+    }
+    
+    private void waitForExecution() {
+        synchronized (executionLock) {
+            if (executed) {
+                return;
+            }
+            
+            execute();
+            executed = true;
+        }
+    }
+    
+    public void resetState() {
+        executed = false;
     }
     
     public Blueprint getBlueprint() {

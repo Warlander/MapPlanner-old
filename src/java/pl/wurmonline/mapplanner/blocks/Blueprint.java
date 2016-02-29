@@ -21,6 +21,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import pl.wurmonline.mapplanner.blocks.blocks.SaveMap;
 
 public final class Blueprint {
     
@@ -36,6 +37,9 @@ public final class Blueprint {
     private final DoubleProperty cameraX;
     private final DoubleProperty cameraY;
     
+    private boolean executing;
+    private final Object executionLock;
+    
     public Blueprint() {
         this.title = new SimpleStringProperty("Blueprint");
         
@@ -50,6 +54,9 @@ public final class Blueprint {
         this.cameraY = new SimpleDoubleProperty();
         
         addToolbox(Blocks.getCoreToolbox());
+        
+        this.executing = false;
+        this.executionLock = new Object();
     }
     
     public String serialize() throws ParserConfigurationException, TransformerException {
@@ -93,6 +100,23 @@ public final class Blueprint {
         
         return writer.getBuffer().toString();
     }
+    
+    public void execute() {
+        synchronized(executionLock) {
+            if (executing) {
+                return;
+            }
+            
+            executing = true;
+        }
+        
+        blocks.stream()
+                .filter((Block block) -> block.getData() instanceof SaveMap)
+                .findAny()
+                .ifPresent((Block block) -> block.execute());
+        executing = false;
+    }
+    
     
     public StringProperty titleProperty() {
         return title;
@@ -151,8 +175,17 @@ public final class Blueprint {
     }
     
     public Block addBlock(Class<? extends BlockData> dataClass) {
-        Optional<BlockData> optionalData = toolboxes
-                .stream()
+        if (dataClass == SaveMap.class) {
+            Optional<Block> saveBlock = blocks.stream()
+                .filter((Block block) -> block.getData() instanceof SaveMap)
+                .findAny();
+            
+            if (saveBlock.isPresent()) {
+                throw new IllegalArgumentException("You cannot have more than one map save block on single blueprint.");
+            }
+        }
+        
+        Optional<BlockData> optionalData = toolboxes.stream()
                 .map((Toolbox toolbox) -> toolbox.getBlockData(dataClass))
                 .filter((BlockData data) -> data != null)
                 .findFirst();

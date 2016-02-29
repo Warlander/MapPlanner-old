@@ -1,6 +1,9 @@
 package pl.wurmonline.mapplanner.blocks;
 
 import java.util.Arrays;
+import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -12,6 +15,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public final class Block implements XMLSerializable {
+    
+    private static final Semaphore semaphore = new Semaphore(4);
     
     private final Blueprint blueprint;
     
@@ -63,9 +68,17 @@ public final class Block implements XMLSerializable {
         
         Object[] in = Arrays.stream(inputs).map((Argument arg) -> arg.getValue()).toArray();
         
-        progress.set(0);
-        data.execute(in, outputs, progress);
-        progress.set(1);
+        try {
+            semaphore.acquire();
+            progress.set(0);
+            data.execute(in, outputs, progress);
+            progress.set(1);
+            semaphore.release();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
     }
     
     private void waitForExecution() {

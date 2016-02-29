@@ -4,6 +4,8 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -101,6 +103,14 @@ public final class Blueprint {
         return writer.getBuffer().toString();
     }
     
+    public boolean isExecuting() {
+        return executing;
+    }
+    
+    public void cancelExecution() {
+        executing = false;
+    }
+    
     public void execute() {
         synchronized(executionLock) {
             if (executing) {
@@ -110,13 +120,18 @@ public final class Blueprint {
             executing = true;
         }
         
-        blocks.stream()
+        Thread executionThread = new Thread() {
+            public void run() {
+                blocks.stream()
                 .filter((Block block) -> block.getData() instanceof SaveMap)
                 .findAny()
                 .ifPresent((Block block) -> block.execute());
-        executing = false;
+                executing = false;
+            }
+        };
+        
+        executionThread.start();
     }
-    
     
     public StringProperty titleProperty() {
         return title;

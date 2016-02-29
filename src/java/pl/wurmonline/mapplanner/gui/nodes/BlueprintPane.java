@@ -23,9 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
 import pl.wurmonline.mapplanner.blocks.Block;
 import pl.wurmonline.mapplanner.blocks.Blueprint;
-import pl.wurmonline.mapplanner.blocks.Toolbox;
 import pl.wurmonline.mapplanner.blocks.Blocks;
-import pl.wurmonline.mapplanner.blocks.blocks.mapinit.CreateMap;
 import pl.wurmonline.mapplanner.gui.ContextMenuCreator;
 import pl.wurmonline.mapplanner.gui.MainPane;
 

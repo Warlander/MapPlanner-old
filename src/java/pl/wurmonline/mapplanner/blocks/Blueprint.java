@@ -4,8 +4,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -59,6 +57,8 @@ public final class Blueprint {
         
         this.executing = false;
         this.executionLock = new Object();
+        
+        addBlock(SaveMap.class);
     }
     
     public String serialize() throws ParserConfigurationException, TransformerException {

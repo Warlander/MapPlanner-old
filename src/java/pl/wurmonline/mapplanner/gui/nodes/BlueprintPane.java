@@ -55,14 +55,12 @@ public final class BlueprintPane extends AnchorPane implements ContextMenuCreato
         
         setOnContextMenuRequested(contextMenuHandler);
         
+        blueprint.getChildrenReadonly().forEach(this::addBlock);
+        
         blueprint.getChildrenReadonly().addListener((Change<? extends Block> change) -> {
             while (change.next()) {
-                change.getAddedSubList().stream().forEach((block) -> {
-                    addBlock(block);
-                });
-                change.getRemoved().stream().forEach((block) -> {
-                    removeBlock(block);
-                });
+                change.getAddedSubList().forEach(this::addBlock);
+                change.getRemoved().forEach(this::removeBlock);
             }
         });
     }

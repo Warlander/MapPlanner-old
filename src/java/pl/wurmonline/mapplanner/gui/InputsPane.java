@@ -39,6 +39,9 @@ public class InputsPane extends GridPane {
             ChoiceBox<ArgumentState> argumentTypeBox = new ChoiceBox<>();
             argumentTypeBox.setItems(FXCollections.observableArrayList(ArgumentState.values()));
             argumentTypeBox.getSelectionModel().select(arg.getState());
+            if (arg.getData().isAlwaysExternal()) {
+                argumentTypeBox.setDisable(true);
+            }
             arg.stateProperty().bind(argumentTypeBox.getSelectionModel().selectedItemProperty());
             arg.stateProperty().addListener((observable, oldValue, newValue) -> {
                 if (oldValue == ArgumentState.INTERNAL) {

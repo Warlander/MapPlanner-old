@@ -16,7 +16,7 @@ import org.w3c.dom.Element;
 
 public final class Block implements XMLSerializable {
     
-    private static final Semaphore semaphore = new Semaphore(4);
+    private static final Semaphore SEMAPHORE = new Semaphore(4);
     
     private final Blueprint blueprint;
     
@@ -69,11 +69,11 @@ public final class Block implements XMLSerializable {
         Object[] in = Arrays.stream(inputs).map((Argument arg) -> arg.getValue()).toArray();
         
         try {
-            semaphore.acquire();
+            SEMAPHORE.acquire();
             progress.set(0);
             data.execute(in, outputs, progress);
             progress.set(1);
-            semaphore.release();
+            SEMAPHORE.release();
         } catch (InterruptedException ex) {
             Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
         }

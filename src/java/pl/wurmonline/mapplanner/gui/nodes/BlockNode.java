@@ -27,6 +27,7 @@ import pl.wurmonline.mapplanner.blocks.ArgumentState;
 import pl.wurmonline.mapplanner.blocks.Block;
 import static pl.wurmonline.mapplanner.GUIConstants.*;
 import pl.wurmonline.mapplanner.blocks.Argument;
+import pl.wurmonline.mapplanner.blocks.blocks.SaveMap;
 import pl.wurmonline.mapplanner.gui.ContextMenuCreator;
 import pl.wurmonline.mapplanner.gui.FXUtils;
 import pl.wurmonline.mapplanner.gui.InputsPane;
@@ -106,11 +107,13 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
     public ContextMenu createContextMenu(ContextMenuEvent evt) {
         ContextMenu menu = new ContextMenu();
         
-        menu.getItems().add(new MenuItem("Delete") {{
-            this.setOnAction((e) -> {
-                destroy();
-            });
-        }});
+        if (!(block.getData() instanceof SaveMap)) {
+            menu.getItems().add(new MenuItem("Delete") {{
+                this.setOnAction((e) -> {
+                    destroy();
+                });
+            }});
+        }
         
         menu.getItems().add(new MenuItem("Inputs") {{
             this.setOnAction((e) -> {

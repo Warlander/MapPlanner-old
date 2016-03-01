@@ -5,8 +5,8 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import pl.wurmonline.mapplanner.Constants;
 import static pl.wurmonline.mapplanner.GUIConstants.GRID_SIZE;
-import pl.wurmonline.mapplanner.blocks.blocks.AddBlock;
-import pl.wurmonline.mapplanner.blocks.blocks.mapinit.CreateMap;
+import pl.wurmonline.mapplanner.blocks.blocks.*;
+import pl.wurmonline.mapplanner.blocks.blocks.mapinit.*;
 
 public class Blocks {
     
@@ -14,7 +14,13 @@ public class Blocks {
     
     static {
         CORE_TOOLBOX = new Toolbox("MapPlanner Core", Constants.VERSION_NUMBER);
-        CORE_TOOLBOX.registerBlockData(AddBlock.class);
+        register(AddBlock.class);
+        register(SaveMap.class);
+        register(CreateMap.class);
+    }
+    
+    private static void register(Class clazz) {
+        CORE_TOOLBOX.registerBlockData(clazz);
     }
     
     public static Toolbox getCoreToolbox() {
@@ -23,6 +29,10 @@ public class Blocks {
     
     public static void fillCreationMenu(Blueprint blueprint, ObservableList<MenuItem> items, double posX, double posY) {
         for (BlockData data : blueprint.getAllRegisteredData()) {
+            if (data instanceof SaveMap) {
+                continue;
+            }
+            
             ObservableList<MenuItem> currentCategory = items;
             
             for (String category : data.getPath()) {

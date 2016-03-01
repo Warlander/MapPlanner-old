@@ -4,6 +4,7 @@ import pl.wurmonline.mapplanner.gui.MainPane;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import pl.wurmonline.mapplanner.mapgen.Heightmap;
 import pl.wurmonline.mapplanner.util.Log;
 
 public class Main extends Application {

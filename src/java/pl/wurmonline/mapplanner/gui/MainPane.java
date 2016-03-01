@@ -241,7 +241,7 @@ public class MainPane extends BorderPane {
     }
     
     private void handleExecute() {
-        
+        diagramPane.getBlueprint().execute();
     }
     
     private void handleStop() {

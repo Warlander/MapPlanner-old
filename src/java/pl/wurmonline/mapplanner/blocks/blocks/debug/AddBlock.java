@@ -1,4 +1,4 @@
-package pl.wurmonline.mapplanner.blocks.blocks;
+package pl.wurmonline.mapplanner.blocks.blocks.debug;
 
 import pl.wurmonline.mapplanner.blocks.Argument;
 import pl.wurmonline.mapplanner.blocks.ArgumentData;
@@ -9,7 +9,7 @@ import pl.wurmonline.mapplanner.blocks.arguments.IntArgumentData;
 public class AddBlock extends BlockData {
     
     public AddBlock() {
-        super("Value + Value",
+        super("Debug/Value + Value",
                 new ArgumentData[] { 
                     new IntArgumentData("Value 1", true), 
                     new IntArgumentData("Value 2", true) }, 

@@ -13,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import pl.wurmonline.mapplanner.util.Log;
 
 public final class Block implements XMLSerializable {
     
@@ -62,18 +63,26 @@ public final class Block implements XMLSerializable {
     }
     
     void execute() {
+        Log.info(this, "Waiting for external inputs");
+        
         externalInputs.stream()
                 .filter((externalInput) -> externalInput.getInput() != null)
                 .forEach((externalInput) -> externalInput.getInput().getBlock().waitForExecution());
+        
+        Log.info(this, "Inputs ready, preparing for execution");
         
         Object[] in = Arrays.stream(inputs).map((Argument arg) -> arg.getValue()).toArray();
         
         try {
             SEMAPHORE.acquire();
+            Log.info(this, "Semaphore aquired");
             progress.set(0);
+            Log.info(this, "Executing");
             data.execute(in, outputs, progress);
+            Log.info(this, "Finished execution");
             progress.set(1);
             SEMAPHORE.release();
+            Log.info(this, "Semaphore released");
         } catch (InterruptedException ex) {
             Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -167,5 +176,9 @@ public final class Block implements XMLSerializable {
     public ReadOnlyDoubleProperty progressProperty() {
         return progress;
     } 
+    
+    public String toString() {
+        return title.get();
+    }
     
 }

@@ -17,7 +17,7 @@ public class HeightmapArgumentData extends ArgumentData<Heightmap> {
     }
     
     public Color getGUIColor() {
-        return Color.RED;
+        return Color.ORANGE;
     }
 
     protected Node createEditor(Argument<Heightmap> arg) {

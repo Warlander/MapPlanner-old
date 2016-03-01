@@ -1,11 +1,14 @@
 package pl.wurmonline.mapplanner.blocks;
 
+import pl.wurmonline.mapplanner.blocks.blocks.debug.AddBlock;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import pl.wurmonline.mapplanner.Constants;
 import static pl.wurmonline.mapplanner.GUIConstants.GRID_SIZE;
 import pl.wurmonline.mapplanner.blocks.blocks.*;
+import pl.wurmonline.mapplanner.blocks.blocks.debug.DummyConventer;
+import pl.wurmonline.mapplanner.blocks.blocks.debug.HeightmapDisplayBlock;
 import pl.wurmonline.mapplanner.blocks.blocks.mapinit.*;
 import pl.wurmonline.mapplanner.blocks.blocks.utilities.SingleRandomValue;
 
@@ -30,11 +33,19 @@ public class Blocks {
         register(SaveMap.class);
         
         //testing/debug
-        register(AddBlock.class);
+        registerDebug(AddBlock.class);
+        registerDebug(DummyConventer.class);
+        registerDebug(HeightmapDisplayBlock.class);
     }
     
     private static void register(Class clazz) {
         CORE_TOOLBOX.registerBlockData(clazz);
+    }
+    
+    private static void registerDebug(Class clazz) {
+        if (Constants.DEBUG) {
+            register(clazz);
+        }
     }
     
     public static Toolbox getCoreToolbox() {

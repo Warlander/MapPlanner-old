@@ -7,6 +7,7 @@ import pl.wurmonline.mapplanner.Constants;
 import static pl.wurmonline.mapplanner.GUIConstants.GRID_SIZE;
 import pl.wurmonline.mapplanner.blocks.blocks.*;
 import pl.wurmonline.mapplanner.blocks.blocks.mapinit.*;
+import pl.wurmonline.mapplanner.blocks.blocks.utilities.SingleRandomValue;
 
 public class Blocks {
     
@@ -14,9 +15,22 @@ public class Blocks {
     
     static {
         CORE_TOOLBOX = new Toolbox("MapPlanner Core", Constants.VERSION_NUMBER);
-        register(AddBlock.class);
-        register(SaveMap.class);
+        //mapgen
+        
+        //mapinit
+        register(CreateHeightmap.class);
         register(CreateMap.class);
+        register(CreateRandomFromInt.class);
+        register(CreateRandomFromString.class);
+        
+        //utilities
+        register(SingleRandomValue.class);
+        
+        //other
+        register(SaveMap.class);
+        
+        //testing/debug
+        register(AddBlock.class);
     }
     
     private static void register(Class clazz) {

@@ -9,6 +9,7 @@ import static pl.wurmonline.mapplanner.GUIConstants.GRID_SIZE;
 import pl.wurmonline.mapplanner.blocks.blocks.*;
 import pl.wurmonline.mapplanner.blocks.blocks.debug.DummyConventer;
 import pl.wurmonline.mapplanner.blocks.blocks.debug.HeightmapDisplayBlock;
+import pl.wurmonline.mapplanner.blocks.blocks.mapgen.NoiseGenerator;
 import pl.wurmonline.mapplanner.blocks.blocks.mapinit.*;
 import pl.wurmonline.mapplanner.blocks.blocks.utilities.SingleRandomValue;
 
@@ -19,6 +20,7 @@ public class Blocks {
     static {
         CORE_TOOLBOX = new Toolbox("MapPlanner Core", Constants.VERSION_NUMBER);
         //mapgen
+        register(NoiseGenerator.class);
         
         //mapinit
         register(CreateHeightmap.class);

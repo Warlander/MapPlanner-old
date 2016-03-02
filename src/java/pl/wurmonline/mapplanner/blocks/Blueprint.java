@@ -21,6 +21,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import pl.wurmonline.mapplanner.blocks.blocks.SaveMap;
 
 public final class Blueprint {
@@ -61,12 +62,45 @@ public final class Blueprint {
         addBlock(SaveMap.class);
     }
     
+    public Blueprint(Document doc) {
+        Element root = (Element) doc.getElementsByTagName("blueprint").item(0);
+        
+        this.title = new SimpleStringProperty(root.getAttribute("title"));
+        this.cameraX = new SimpleDoubleProperty(Double.parseDouble(root.getAttribute("cameraX")));
+        this.cameraY = new SimpleDoubleProperty(Double.parseDouble(root.getAttribute("cameraY")));
+        
+        this.toolboxes = new ArrayList<>();
+        this.blocks = FXCollections.observableArrayList();
+        this.blocksReadonly = FXCollections.unmodifiableObservableList(blocks);
+        
+        this.properties = FXCollections.observableArrayList();
+        this.propertiesReadonly = FXCollections.unmodifiableObservableList(properties);
+        
+        this.executing = false;
+        this.executionLock = new Object();
+        
+        Element requires = (Element) root.getElementsByTagName("require").item(0);
+        NodeList toolboxList = requires.getElementsByTagName("toolbox");
+        for (int i = 0; i < toolboxList.getLength(); i++) {
+            Element item = (Element) toolboxList.item(i);
+            addToolbox(new Toolbox(item));
+        }
+        
+        Element blocksElement = (Element) root.getElementsByTagName("blocks").item(0);
+        NodeList blocksList = blocksElement.getElementsByTagName("block");
+        for (int i = 0; i < blocksList.getLength(); i++) {
+            Element item = (Element) blocksList.item(i);
+            blocks.add(new Block(this, item));
+        }
+    }
+    
     public String serialize() throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.newDocument();
         
         Element main = doc.createElement("blueprint");
+        main.setAttribute("title", title.get());
         main.setAttribute("cameraX", Double.toString(cameraX.get()));
         main.setAttribute("cameraY", Double.toString(cameraY.get()));
         doc.appendChild(main);
@@ -219,8 +253,24 @@ public final class Blueprint {
                 .toArray(BlockData[]::new);
     }
     
+    public BlockData getRegisteredData(String identifier) {
+        return toolboxes.stream()
+                .filter((toolbox) -> toolbox.getBlockData(identifier) != null)
+                .map((toolbox) -> toolbox.getBlockData(identifier))
+                .findAny()
+                .orElse(null);
+    }
+    
     public boolean removeBlock(Block block) {
         return blocks.remove(block);
+    }
+    
+    public Argument lookupExternalInputs(String uuid) {
+        return blocks.stream()
+                .flatMap((block) -> block.getExternalInputsReadonly().stream())
+                .filter((argument) -> argument.getId().equals(uuid))
+                .findAny()
+                .orElse(null);
     }
     
 }

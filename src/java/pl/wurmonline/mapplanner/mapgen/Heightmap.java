@@ -81,7 +81,7 @@ public class Heightmap {
                 int g = color.getGreen();
                 int b = color.getBlue();
 
-                final int coord = (x / downscalePower * downHeight) * 3;
+                final int coord = (y / downscalePower * downHeight + x / downscalePower) * 3;
                 data[coord + 0] = r;
                 data[coord + 1] = g;
                 data[coord + 2] = b;

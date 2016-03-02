@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import pl.wurmonline.mapplanner.util.Log;
+import pl.wurmonline.mapplanner.util.SerializationUtils;
 
 public final class Block implements XMLSerializable {
     
@@ -58,8 +59,40 @@ public final class Block implements XMLSerializable {
         executionLock = new Object();
     }
     
+    public Block(Blueprint blueprint, Element root) {
+        this.blueprint = blueprint;
+        this.title = new SimpleStringProperty(root.getAttribute("title"));
+        this.data = blueprint.getRegisteredData(root.getAttribute("data"));
+        this.inputs = data.createInputs(this, root.getElementsByTagName("input"));
+        this.outputs = data.createOutputs(this);
+        this.externalInputs = FXCollections.observableArrayList();
+        this.externalInputsReadonly = FXCollections.unmodifiableObservableList(externalInputs);
+        
+        Arrays.stream(inputs)
+                .filter((arg) -> arg.getState() == ArgumentState.EXTERNAL)
+                .forEach(externalInputs::add);
+        
+        this.progress = new ProgressProperty(this);
+        
+        this.gridX = new SimpleIntegerProperty(Integer.parseInt(root.getAttribute("gridX")));
+        this.gridY = new SimpleIntegerProperty(Integer.parseInt(root.getAttribute("gridY")));
+        
+        executionLock = new Object();
+    }
+    
     public Element serialize(Document doc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Element root = doc.createElement("block");
+        root.setAttribute("title", title.get());
+        root.setAttribute("data", SerializationUtils.getIdentifier(data.getClass()));
+        root.setAttribute("gridX", Integer.toString(gridX.get()));
+        root.setAttribute("gridY", Integer.toString(gridY.get()));
+        
+        for (Argument argument : inputs) {
+            Element node = argument.serialize(doc);
+            root.appendChild(node);
+        }
+        
+        return root;
     }
     
     void execute() {

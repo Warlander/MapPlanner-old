@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import pl.wurmonline.mapplanner.util.SerializationUtils;
 
 public final class Toolbox implements XMLSerializable {
     
@@ -15,14 +16,45 @@ public final class Toolbox implements XMLSerializable {
     private final int version;
     private final Map<String, BlockData> blocksData;
     
+    public static Toolbox getToolbox(Element root) {
+        String title = root.getAttribute("title");
+        int version = Integer.parseInt(root.getAttribute("version"));
+        return getToolbox(title, version);
+    }
+    
+    public static Toolbox getToolbox(String title, int version) {
+        if (title.equals("MapPlanner Core")) {
+            return Blocks.getCoreToolbox();
+        }
+        else {
+            return new Toolbox(title, version);
+        }
+    }
+    
     public Toolbox(String title, int version) {
         this.title = title;
         this.version = version;
         blocksData = new HashMap<>();
+        lookupData();
+    }
+    
+    public Toolbox(Element root) {
+        this.title = root.getAttribute("title");
+        this.version = Integer.parseInt(root.getAttribute("version"));
+        blocksData = new HashMap<>();
+        lookupData();
+    }
+    
+    private void lookupData() {
+        
     }
     
     public Element serialize(Document doc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Element root = doc.createElement("toolbox");
+        root.setAttribute("title", title);
+        root.setAttribute("version", Integer.toString(version));
+        
+        return root;
     }
     
     public boolean isUsedIn(Blueprint blueprint) {
@@ -34,7 +66,7 @@ public final class Toolbox implements XMLSerializable {
     public void registerBlockData(Class<? extends BlockData> clazz) {
         try {
             BlockData data = clazz.newInstance();
-            blocksData.put(getIdentifier(clazz), data);
+            blocksData.put(SerializationUtils.getIdentifier(clazz), data);
         } catch (InstantiationException ex) {
             throw new IllegalArgumentException("Block data must contain empty constructor");
         } catch (IllegalAccessException ex) {
@@ -47,21 +79,11 @@ public final class Toolbox implements XMLSerializable {
     }
     
     BlockData getBlockData(Class<? extends BlockData> clazz) {
-        return getBlockData(getIdentifier(clazz));
+        return getBlockData(SerializationUtils.getIdentifier(clazz));
     }
     
     BlockData getBlockData(String identifier) {
         return blocksData.get(identifier);
-    }
-    
-    private String getIdentifier(Class<? extends BlockData> clazz) {
-        Annotation[] annotations = clazz.getAnnotations();
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof Identifier) {
-                return ((Identifier) annotation).value();
-            }
-        }
-        return clazz.getSimpleName();
     }
     
     public String title() {

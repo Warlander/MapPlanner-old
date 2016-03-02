@@ -71,14 +71,8 @@ public abstract class ArgumentData<T> {
         return maxValue;
     }
     
-    public final Argument<T> createArgument(Block block) {
-        Argument<T> arg = new Argument<>(block, this);
-        T value = getDefaultValue();
-        if (value != null) {
-            arg.setValue(value);
-        }
-        return arg;
-    }
+    public abstract String serializeValue(T value);
+    public abstract T deserializeValue(String str);
     
     public abstract Color getGUIColor();
     protected abstract Node createEditor(Argument<T> arg);

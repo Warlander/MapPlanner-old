@@ -4,6 +4,8 @@ import java.util.Arrays;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public abstract class BlockData {
     
@@ -40,12 +42,35 @@ public abstract class BlockData {
         return path;
     }
     
+    final Argument[] createInputs(Block block, NodeList serializationData) {
+        return parseArguments(block, serializationData, dataInputs);
+    }
+    
+    private Argument[] parseArguments(Block block, NodeList serializationData, ArgumentData[] datas) {
+        Argument[] arguments = new Argument[datas.length];
+        
+        for (int i = 0; i < datas.length; i++) {
+            ArgumentData data = datas[i];
+            String identifier = data.getIdentifier();
+            for (int i2 = 0; i2 < serializationData.getLength(); i2++) {
+                Element node = (Element) serializationData.item(i2);
+                if (node.getAttribute("id").equals(identifier)) {
+                    arguments[i] = new Argument(block, data, node);
+                    continue;
+                }
+            }
+            arguments[i] = new Argument(block, data);
+        }
+        
+        return arguments;
+    }
+    
     final Argument[] createInputs(Block block) {
-        return Arrays.stream(dataInputs).map(data -> data.createArgument(block)).toArray(Argument[]::new);
+        return Arrays.stream(dataInputs).map(data -> new Argument(block, data)).toArray(Argument[]::new);
     }
     
     final Argument[] createOutputs(Block block) {
-        return Arrays.stream(dataOutputs).map(data -> data.createArgument(block)).toArray(Argument[]::new);
+        return Arrays.stream(dataOutputs).map(data -> new Argument(block, data)).toArray(Argument[]::new);
     }
     
     protected abstract void execute(final Object[] inputs, final Argument[] outputs, ProgressProperty progress);

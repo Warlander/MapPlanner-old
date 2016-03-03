@@ -31,5 +31,13 @@ public class MapArgumentData extends ArgumentData<Map> {
     protected boolean checkFit(Object value) {
         return value instanceof Map;
     }
+
+    public String serializeValue(Map value) {
+        return null;
+    }
+
+    public Map deserializeValue(String str) {
+        return null;
+    }
     
 }

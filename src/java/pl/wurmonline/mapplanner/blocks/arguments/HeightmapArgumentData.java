@@ -31,5 +31,13 @@ public class HeightmapArgumentData extends ArgumentData<Heightmap> {
     protected boolean checkFit(Object value) {
         return value instanceof Heightmap;
     }
+
+    public String serializeValue(Heightmap value) {
+        return null;
+    }
+
+    public Heightmap deserializeValue(String str) {
+        return null;
+    }
     
 }

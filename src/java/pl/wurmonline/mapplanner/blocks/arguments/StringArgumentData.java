@@ -40,5 +40,13 @@ public class StringArgumentData extends ArgumentData<String> {
     protected boolean checkFit(Object value) {
         return value instanceof String;
     }
+
+    public String serializeValue(String value) {
+        return value;
+    }
+
+    public String deserializeValue(String str) {
+        return str;
+    }
     
 }

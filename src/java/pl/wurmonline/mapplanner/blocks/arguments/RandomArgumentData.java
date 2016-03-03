@@ -42,6 +42,18 @@ public class RandomArgumentData extends ArgumentData<XORRandom> {
     protected boolean checkFit(Object value) {
         return value instanceof XORRandom;
     }
+
+    public String serializeValue(XORRandom value) {
+        return Long.toString(value.getOriginalSeed());
+    }
+
+    public XORRandom deserializeValue(String str) {
+        try {
+            return new XORRandom(Long.parseLong(str));
+        } catch (NumberFormatException ex) {
+            return new XORRandom(str.hashCode());
+        }
+    }
     
     
     

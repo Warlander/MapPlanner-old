@@ -52,5 +52,13 @@ public class IntArgumentData extends ArgumentData<Integer> {
     protected boolean checkFit(Object value) {
         return value instanceof Integer;
     }
+
+    public String serializeValue(Integer value) {
+        return value.toString();
+    }
+
+    public Integer deserializeValue(String str) {
+        return Integer.parseInt(str);
+    }
     
 }

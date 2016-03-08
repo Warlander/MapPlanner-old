@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 import pl.wurmonline.mapplanner.blocks.Argument;
 import pl.wurmonline.mapplanner.blocks.ArgumentState;
 import pl.wurmonline.mapplanner.blocks.Block;
+import pl.wurmonline.mapplanner.gui.nodes.BlueprintContainer;
 import pl.wurmonline.mapplanner.gui.nodes.TitleLabel;
 
 public class InputsPane extends GridPane {
@@ -16,10 +17,10 @@ public class InputsPane extends GridPane {
     private static final int ARGUMENT_TYPE_SPACE_PERCENT = 20;
     private static final int EDITOR_SPACE_PERCENT = 45;
     
-    private final MainPane mainPane;
+    private final BlueprintContainer blueprintContainer;
     
-    public InputsPane(MainPane mainPane, Block block) {
-        this.mainPane = mainPane;
+    public InputsPane(BlueprintContainer blueprintContainer, Block block) {
+        this.blueprintContainer = blueprintContainer;
         
         ColumnConstraints labelCol = new ColumnConstraints();
         labelCol.setPercentWidth(LABEL_SPACE_PERCENT);

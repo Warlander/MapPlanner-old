@@ -136,6 +136,7 @@ public final class Block implements XMLSerializable {
     
     public void resetState() {
         executed = false;
+        progress.set(0);
     }
     
     public Blueprint getBlueprint() {

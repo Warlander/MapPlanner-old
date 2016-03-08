@@ -4,7 +4,10 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -38,7 +41,7 @@ public final class Blueprint {
     private final DoubleProperty cameraX;
     private final DoubleProperty cameraY;
     
-    private boolean executing;
+    private final BooleanProperty executing;
     private final Object executionLock;
     
     public Blueprint() {
@@ -56,7 +59,7 @@ public final class Blueprint {
         
         addToolbox(Blocks.getCoreToolbox());
         
-        this.executing = false;
+        this.executing = new SimpleBooleanProperty(false);
         this.executionLock = new Object();
         
         addBlock(SaveMap.class);
@@ -76,7 +79,7 @@ public final class Blueprint {
         this.properties = FXCollections.observableArrayList();
         this.propertiesReadonly = FXCollections.unmodifiableObservableList(properties);
         
-        this.executing = false;
+        this.executing = new SimpleBooleanProperty(false);
         this.executionLock = new Object();
         
         Element requires = (Element) root.getElementsByTagName("require").item(0);
@@ -137,30 +140,48 @@ public final class Blueprint {
         return writer.getBuffer().toString();
     }
     
+    public ReadOnlyBooleanProperty executingProperty() {
+        return ReadOnlyBooleanProperty.readOnlyBooleanProperty(executing);
+    }
+    
+    private void resetState() {
+        synchronized (executionLock) {
+            if (!executing.get()) {
+                return;
+            }
+            
+            executing.set(false);
+            blocks.stream().forEach((block) -> block.resetState());
+        }
+    }
+    
     public boolean isExecuting() {
-        return executing;
+        return executing.get();
     }
     
     public void cancelExecution() {
-        executing = false;
+        resetState();
     }
     
     public void execute() {
         synchronized(executionLock) {
-            if (executing) {
+            if (executing.get()) {
                 return;
             }
             
-            executing = true;
+            executing.set(true);
+            executeBlueprint();
         }
-        
+    }
+    
+    private void executeBlueprint() {
         Thread executionThread = new Thread() {
             public void run() {
                 blocks.stream()
                 .filter((Block block) -> block.getData() instanceof SaveMap)
                 .findAny()
                 .ifPresent((Block block) -> block.execute());
-                executing = false;
+                resetState();
             }
         };
         

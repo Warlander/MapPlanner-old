@@ -23,7 +23,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import pl.wurmonline.mapplanner.blocks.ArgumentState;
 import pl.wurmonline.mapplanner.blocks.Block;
 import static pl.wurmonline.mapplanner.GUIConstants.*;
 import pl.wurmonline.mapplanner.blocks.Argument;
@@ -127,7 +126,7 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
                 inputsStage.setResizable(false);
                 inputsStage.setAlwaysOnTop(true);
                 
-                InputsPane inputs = new InputsPane(root.getMainPane(), block);
+                InputsPane inputs = new InputsPane(root.getBlueprintContainer(), block);
                 
                 Scene scene = new Scene(inputs, 400, 600);
                 inputsStage.setScene(scene);

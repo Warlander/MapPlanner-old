@@ -19,18 +19,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pl.wurmonline.mapplanner.blocks.Blocks;
+import pl.wurmonline.mapplanner.blocks.Blueprint;
+import pl.wurmonline.mapplanner.gui.nodes.BlueprintContainer;
 
 public class MainPane extends BorderPane {
     
-    private final BlueprintPane diagramPane;
-    private final ParametersBox parametersBox;
+    private BlueprintContainer blueprintContainer;
     
     public MainPane() {
-        diagramPane = new BlueprintPane(this);
-        setCenter(diagramPane);
+        Blueprint blueprint = new Blueprint();
         
-        parametersBox = new ParametersBox(diagramPane.getBlueprint());
-        setLeft(parametersBox);
+        blueprintContainer = new BlueprintContainer(this, blueprint);
+        setCenter(blueprintContainer);
         
         VBox top = createTopBar();
         setTop(top);
@@ -111,7 +111,7 @@ public class MainPane extends BorderPane {
     
     private Menu createBlocksMenu() {
         Menu blocks = new Menu("Blocks");
-        Blocks.fillCreationMenu(diagramPane.getBlueprint(), blocks.getItems(), 0, 0);
+        Blocks.fillCreationMenu(blueprintContainer.getBlueprint(), blocks.getItems(), 0, 0);
         
         return blocks;
     }
@@ -241,7 +241,7 @@ public class MainPane extends BorderPane {
     }
     
     private void handleExecute() {
-        diagramPane.getBlueprint().execute();
+        blueprintContainer.getBlueprint().execute();
     }
     
     private void handleStop() {
@@ -267,14 +267,6 @@ public class MainPane extends BorderPane {
         Stage stage = (Stage) getScene().getWindow();
         
         stage.close();
-    }
-    
-    public BlueprintPane getDiagramPane() {
-        return diagramPane;
-    }
-    
-    public ParametersBox getParametersBox() {
-        return parametersBox;
     }
     
 }

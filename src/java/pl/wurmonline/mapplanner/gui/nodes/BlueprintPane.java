@@ -29,15 +29,15 @@ import pl.wurmonline.mapplanner.gui.MainPane;
 
 public final class BlueprintPane extends AnchorPane implements ContextMenuCreator {
     
-    private final MainPane mainPane;
+    private final BlueprintContainer blueprintContainer;
     
     private final Group group;
     
     private final Blueprint blueprint;
     private final ObservableMap<Block, BlockNode> blocksMap;
     
-    public BlueprintPane(MainPane mainPane) {
-        this.mainPane = mainPane;
+    public BlueprintPane(BlueprintContainer blueprintContainer) {
+        this.blueprintContainer = blueprintContainer;
         
         blueprint = new Blueprint();
         blocksMap = FXCollections.observableHashMap();
@@ -184,8 +184,8 @@ public final class BlueprintPane extends AnchorPane implements ContextMenuCreato
         return blocksMap.get(block);
     }
     
-    public MainPane getMainPane() {
-        return mainPane;
+    public BlueprintContainer getBlueprintContainer() {
+        return blueprintContainer;
     }
     
 }

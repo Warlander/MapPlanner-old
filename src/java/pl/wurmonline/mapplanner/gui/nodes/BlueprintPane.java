@@ -39,7 +39,7 @@ public final class BlueprintPane extends AnchorPane implements ContextMenuCreato
     public BlueprintPane(BlueprintContainer blueprintContainer) {
         this.blueprintContainer = blueprintContainer;
         
-        blueprint = new Blueprint();
+        blueprint = blueprintContainer.getBlueprint();
         blocksMap = FXCollections.observableHashMap();
         
         BackgroundImage background = new BackgroundImage(new Image(BlueprintPane.class.getResourceAsStream("/pl/wurmonline/mapplanner/gui/background.png")),
@@ -106,10 +106,10 @@ public final class BlueprintPane extends AnchorPane implements ContextMenuCreato
         newBindCurve.setStroke(Color.BLACK);
         newBindCurve.setStrokeWidth(3);
         newBindCurve.setFill(null);
-        newBindCurve.setStartX(start.localToScene(new Point2D(0, 0)).getX() + start.getCircleX() - getLayoutX());
-        newBindCurve.setStartY(start.localToScene(new Point2D(0, 0)).getY() + start.getCircleY() - getLayoutY());
-        newBindCurve.setEndX(start.localToScene(new Point2D(0, 0)).getX() + start.getCircleX() - getLayoutX());
-        newBindCurve.setEndY(start.localToScene(new Point2D(0, 0)).getY() + start.getCircleY() - getLayoutY());
+        newBindCurve.setStartX(start.localToScene(new Point2D(0, 0)).getX() + start.getCircleX() - getLayoutX() - getParent().getLayoutX());
+        newBindCurve.setStartY(start.localToScene(new Point2D(0, 0)).getY() + start.getCircleY() - getLayoutY() - getParent().getLayoutY());
+        newBindCurve.setEndX(start.localToScene(new Point2D(0, 0)).getX() + start.getCircleX() - getLayoutX() - getParent().getLayoutX());
+        newBindCurve.setEndY(start.localToScene(new Point2D(0, 0)).getY() + start.getCircleY() - getLayoutY() - getParent().getLayoutY());
         newBindCurve.setControlX1(newBindCurve.getEndX());
         newBindCurve.setControlY1(newBindCurve.getStartY());
 

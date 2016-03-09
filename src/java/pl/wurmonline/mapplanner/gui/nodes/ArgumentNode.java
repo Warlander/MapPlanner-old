@@ -156,8 +156,15 @@ public class ArgumentNode extends VBox {
         ArgumentNode guiInput = (type == Type.INPUT) ? this : boundArgument;
         ArgumentNode guiOutput = (type == Type.OUTPUT) ? this : boundArgument;
         
-        Point2D inputCircle = guiInput.localToScene(new Point2D(guiInput.getCircleX() - parent.getPanel().getLayoutX(), guiInput.getCircleY() - parent.getPanel().getLayoutY()));
-        Point2D outputCircle = guiOutput.localToScene(new Point2D(guiOutput.getCircleX() - parent.getPanel().getLayoutX(), guiOutput.getCircleY() - parent.getPanel().getLayoutY()));
+        double panelX = parent.getPanel().getLayoutX();
+        double panelY = parent.getPanel().getLayoutY();
+        double parentX = parent.getPanel().getParent().getLayoutX();
+        double parentY = parent.getPanel().getParent().getLayoutY();
+        double layoutX = panelX + parentX;
+        double layoutY = panelY + parentY;
+        
+        Point2D inputCircle = guiInput.localToScene(new Point2D(guiInput.getCircleX() - layoutX, guiInput.getCircleY() - layoutY));
+        Point2D outputCircle = guiOutput.localToScene(new Point2D(guiOutput.getCircleX() - layoutX, guiOutput.getCircleY() - layoutY));
         
         bindCurve.setStartX(inputCircle.getX());
         bindCurve.setStartY(inputCircle.getY());

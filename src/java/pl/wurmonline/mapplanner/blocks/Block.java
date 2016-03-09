@@ -80,6 +80,12 @@ public final class Block implements XMLSerializable {
         executionLock = new Object();
     }
     
+    public void recreateLinks() {
+        for (Argument input : inputs) {
+            input.recreateLinks();
+        }
+    }
+    
     public Element serialize(Document doc) {
         Element root = doc.createElement("block");
         root.setAttribute("title", title.get());
@@ -119,8 +125,6 @@ public final class Block implements XMLSerializable {
         } catch (InterruptedException ex) {
             Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
     }
     
     private void waitForExecution() {

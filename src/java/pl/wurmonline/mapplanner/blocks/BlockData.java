@@ -52,14 +52,15 @@ public abstract class BlockData {
         for (int i = 0; i < datas.length; i++) {
             ArgumentData data = datas[i];
             String identifier = data.getIdentifier();
+            outer:
             for (int i2 = 0; i2 < serializationData.getLength(); i2++) {
                 Element node = (Element) serializationData.item(i2);
-                if (node.getAttribute("id").equals(identifier)) {
+                if (node.getAttribute("data").equals(identifier)) {
                     arguments[i] = new Argument(block, data, node);
-                    continue;
+                    continue outer;
                 }
+                arguments[i] = new Argument(block, data);
             }
-            arguments[i] = new Argument(block, data);
         }
         
         return arguments;

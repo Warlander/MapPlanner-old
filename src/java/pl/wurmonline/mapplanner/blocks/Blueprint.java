@@ -4,6 +4,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -82,6 +83,8 @@ public final class Blueprint {
         this.executing = new SimpleBooleanProperty(false);
         this.executionLock = new Object();
         
+        addToolbox(Blocks.getCoreToolbox());
+        
         Element requires = (Element) root.getElementsByTagName("require").item(0);
         NodeList toolboxList = requires.getElementsByTagName("toolbox");
         for (int i = 0; i < toolboxList.getLength(); i++) {
@@ -94,6 +97,10 @@ public final class Blueprint {
         for (int i = 0; i < blocksList.getLength(); i++) {
             Element item = (Element) blocksList.item(i);
             blocks.add(new Block(this, item));
+        }
+        
+        for (Block block : blocks) {
+            block.recreateLinks();
         }
     }
     
@@ -288,7 +295,7 @@ public final class Blueprint {
     
     public Argument lookupExternalInputs(String uuid) {
         return blocks.stream()
-                .flatMap((block) -> block.getExternalInputsReadonly().stream())
+                .flatMap((block) -> Stream.of(block.getOutputs()))
                 .filter((argument) -> argument.getId().equals(uuid))
                 .findAny()
                 .orElse(null);

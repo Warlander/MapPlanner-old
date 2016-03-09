@@ -7,10 +7,10 @@ import pl.wurmonline.mapplanner.gui.MainPane;
 public class BlueprintContainer extends BorderPane {
     
         private final MainPane mainPane;
-        private final Blueprint blueprint;
+        private Blueprint blueprint;
     
-        private final BlueprintPane diagramPane;
-        private final ParametersBox parametersBox;
+        private BlueprintPane diagramPane;
+        private ParametersBox parametersBox;
         
         public BlueprintContainer(MainPane mainPane) {
             this(mainPane, new Blueprint());
@@ -29,6 +29,19 @@ public class BlueprintContainer extends BorderPane {
         
         public MainPane getMainPane() {
             return mainPane;
+        }
+        
+        public void setBlueprint(Blueprint blueprint) {
+            if (this.blueprint == blueprint) {
+                return;
+            }
+            this.blueprint = blueprint;
+            
+            diagramPane = new BlueprintPane(this);
+            setCenter(diagramPane);
+
+            parametersBox = new ParametersBox(diagramPane.getBlueprint());
+            setLeft(parametersBox);
         }
         
         public Blueprint getBlueprint() {

@@ -19,6 +19,7 @@ public final class Argument<T> implements XMLSerializable {
     private final ObjectProperty<ArgumentState> state;
     private T value;
     private final ObjectProperty<Argument<T>> input;
+    private final String initialInputUUID;
     
     private Node editor;
     
@@ -30,6 +31,7 @@ public final class Argument<T> implements XMLSerializable {
         this.data = data;
         this.value = null;
         this.input = new SimpleObjectProperty<>();
+        this.initialInputUUID = "";
         
         T value = data.getDefaultValue();
         if (value != null) {
@@ -57,9 +59,16 @@ public final class Argument<T> implements XMLSerializable {
             }
         }
         
-        if (root.hasAttribute("input")) {
-            input.set(block.getBlueprint().lookupExternalInputs(root.getAttribute("input")));
+        this.initialInputUUID = root.getAttribute("input");
+        
+        createStateListener();
+    }
+    
+    public void recreateLinks() {
+        if (initialInputUUID.equals("")) {
+            return;
         }
+        input.set(block.getBlueprint().lookupExternalInputs(initialInputUUID));
     }
     
     private void createStateListener() {
@@ -91,12 +100,12 @@ public final class Argument<T> implements XMLSerializable {
         Element root = doc.createElement("input");
         root.setAttribute("uuid", id.toString());
         root.setAttribute("title", title.get());
-        root.setAttribute("state", state.toString());
+        root.setAttribute("state", state.get().toString());
         root.setAttribute("data", data.getIdentifier());
-        if (input == null && data.getDefaultValue() != null) {
+        if (input.get() == null && data.getDefaultValue() != null) {
             root.setAttribute("value", data.serializeValue(value));
         }
-        else if (input != null) {
+        else if (input.get() != null) {
             root.setAttribute("input", input.get().getId());
         }
         

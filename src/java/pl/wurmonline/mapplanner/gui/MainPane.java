@@ -1,12 +1,12 @@
 package pl.wurmonline.mapplanner.gui;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import pl.wurmonline.mapplanner.gui.nodes.BlueprintPane;
-import pl.wurmonline.mapplanner.gui.nodes.ParametersBox;
 import javafx.event.ActionEvent;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -23,9 +23,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.apache.commons.io.IOUtils;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 import pl.wurmonline.mapplanner.blocks.Blocks;
 import pl.wurmonline.mapplanner.util.Log;
 import pl.wurmonline.mapplanner.blocks.Blueprint;
@@ -218,12 +222,22 @@ public class MainPane extends BorderPane {
     }
     
     private void handleOpen() {
-        
+        try (FileInputStream fis = new FileInputStream("Test.mpbp")) {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(fis);
+            Blueprint blueprint = new Blueprint(doc);
+            blueprintContainer.setBlueprint(blueprint);
+            Log.info(this, "Blueprint loaded.");
+        } catch (SAXException | IOException | ParserConfigurationException ex) {
+            Log.error(ex);
+        }
     }
     
     private void handleSave() {
         try (OutputStream stream = new FileOutputStream("Test.mpbp")) {
             IOUtils.write(blueprintContainer.getBlueprint().serialize(), stream);
+            Log.info(this, "Blueprint saved.");
         } catch (ParserConfigurationException | TransformerException | IOException ex) {
             Log.error(ex);
         }

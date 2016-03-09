@@ -1,5 +1,10 @@
 package pl.wurmonline.mapplanner.gui;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pl.wurmonline.mapplanner.gui.nodes.BlueprintPane;
 import pl.wurmonline.mapplanner.gui.nodes.ParametersBox;
 import javafx.event.ActionEvent;
@@ -18,7 +23,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import org.apache.commons.io.IOUtils;
 import pl.wurmonline.mapplanner.blocks.Blocks;
+import pl.wurmonline.mapplanner.util.Log;
 import pl.wurmonline.mapplanner.blocks.Blueprint;
 import pl.wurmonline.mapplanner.gui.nodes.BlueprintContainer;
 
@@ -125,9 +134,6 @@ public class MainPane extends BorderPane {
     private Menu createRunMenu() {
         Menu run = new Menu("Run");
         
-        MenuItem executeBlock = new MenuItem("Execute Block");
-        executeBlock.setOnAction((ActionEvent evt) -> handleExecuteBlock());
-        
         SeparatorMenuItem separator = new SeparatorMenuItem();
         
         MenuItem execute = new MenuItem("Execute");
@@ -136,7 +142,7 @@ public class MainPane extends BorderPane {
         MenuItem stop = new MenuItem("Stop");
         stop.setOnAction((ActionEvent evt) -> handleStop());
         
-        run.getItems().addAll(executeBlock, separator, execute, stop);
+        run.getItems().addAll(execute, stop);
         
         return run;
     }
@@ -180,11 +186,10 @@ public class MainPane extends BorderPane {
         
         Node separator1 = createSeparator();
         
-        Node executeBlock = createImageView("icons/gear47.png", this::handleExecuteBlock);
         Node execute = createImageView("icons/play-button4.png", this::handleExecute);
         Node stop = createImageView("icons/musicplayer145.png", this::handleStop);
         
-        tools.getChildren().addAll(newProject, openProject, saveProject, importProject, exportProject, separator0, undo, redo, separator1, executeBlock, execute, stop);
+        tools.getChildren().addAll(newProject, openProject, saveProject, importProject, exportProject, separator0, undo, redo, separator1, execute, stop);
         
         return tools;
     }
@@ -217,7 +222,11 @@ public class MainPane extends BorderPane {
     }
     
     private void handleSave() {
-        
+        try (OutputStream stream = new FileOutputStream("Test.mpbp")) {
+            IOUtils.write(blueprintContainer.getBlueprint().serialize(), stream);
+        } catch (ParserConfigurationException | TransformerException | IOException ex) {
+            Log.error(ex);
+        }
     }
     
     private void handleImport() {
@@ -233,10 +242,6 @@ public class MainPane extends BorderPane {
     }
     
     private void handleRedo() {
-        
-    }
-    
-    private void handleExecuteBlock() {
         
     }
     

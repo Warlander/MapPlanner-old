@@ -1,6 +1,7 @@
 package pl.wurmonline.mapplanner.blocks;
 
 import java.util.UUID;
+import java.util.stream.Stream;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -42,20 +43,28 @@ public final class Argument<T> implements XMLSerializable {
     }
     
     Argument(Block block, ArgumentData<T> data, Element root) {
+        boolean isOutput = root.getTagName().equals("output");
+        
         this.id = UUID.fromString(root.getAttribute("uuid"));
         this.title = new SimpleStringProperty(root.getAttribute("title"));
-        this.state = new SimpleObjectProperty<>(ArgumentState.valueOf(root.getAttribute("state")));
         this.block = block;
         this.data = data;
         this.input = new SimpleObjectProperty<>();
         
-        if (root.hasAttribute("value")) {
-            this.value = data.deserializeValue(root.getAttribute("value"));
+        if (isOutput) {
+            this.state = new SimpleObjectProperty<>(ArgumentState.EXTERNAL);
         }
         else {
-            T value = data.getDefaultValue();
-            if (value != null) {
-                this.value = value;
+            this.state = new SimpleObjectProperty<>(ArgumentState.valueOf(root.getAttribute("state")));
+            
+            if (root.hasAttribute("value")) {
+                this.value = data.deserializeValue(root.getAttribute("value"));
+            }
+            else {
+                T value = data.getDefaultValue();
+                if (value != null) {
+                    this.value = value;
+                }
             }
         }
         
@@ -97,16 +106,22 @@ public final class Argument<T> implements XMLSerializable {
     }
     
     public Element serialize(Document doc) {
-        Element root = doc.createElement("input");
+        boolean isOutput = Stream.of(block.getOutputs())
+                .anyMatch((arg) -> arg == this);
+        
+        Element root = doc.createElement(isOutput ? "output" : "input");
         root.setAttribute("uuid", id.toString());
         root.setAttribute("title", title.get());
-        root.setAttribute("state", state.get().toString());
         root.setAttribute("data", data.getIdentifier());
-        if (input.get() == null && data.getDefaultValue() != null) {
-            root.setAttribute("value", data.serializeValue(value));
-        }
-        else if (input.get() != null) {
-            root.setAttribute("input", input.get().getId());
+        
+        if (!isOutput) {
+            root.setAttribute("state", state.get().toString());
+            if (input.get() == null && data.getDefaultValue() != null) {
+                root.setAttribute("value", data.serializeValue(value));
+            }
+            else if (input.get() != null) {
+                root.setAttribute("input", input.get().getId());
+            }
         }
         
         return root;

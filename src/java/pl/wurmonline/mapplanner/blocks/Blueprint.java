@@ -296,6 +296,7 @@ public final class Blueprint {
     public Argument lookupExternalInputs(String uuid) {
         return blocks.stream()
                 .flatMap((block) -> Stream.of(block.getOutputs()))
+                .peek((argument) -> System.out.println(argument.getId()))
                 .filter((argument) -> argument.getId().equals(uuid))
                 .findAny()
                 .orElse(null);

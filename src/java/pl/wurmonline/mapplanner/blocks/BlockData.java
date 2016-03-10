@@ -46,6 +46,10 @@ public abstract class BlockData {
         return parseArguments(block, serializationData, dataInputs);
     }
     
+    final Argument[] createOutputs(Block block, NodeList serializationData) {
+        return parseArguments(block, serializationData, dataOutputs);
+    }
+    
     private Argument[] parseArguments(Block block, NodeList serializationData, ArgumentData[] datas) {
         Argument[] arguments = new Argument[datas.length];
         

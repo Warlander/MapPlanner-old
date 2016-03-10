@@ -64,7 +64,7 @@ public final class Block implements XMLSerializable {
         this.title = new SimpleStringProperty(root.getAttribute("title"));
         this.data = blueprint.getRegisteredData(root.getAttribute("data"));
         this.inputs = data.createInputs(this, root.getElementsByTagName("input"));
-        this.outputs = data.createOutputs(this);
+        this.outputs = data.createOutputs(this, root.getElementsByTagName("output"));
         this.externalInputs = FXCollections.observableArrayList();
         this.externalInputsReadonly = FXCollections.unmodifiableObservableList(externalInputs);
         
@@ -94,6 +94,11 @@ public final class Block implements XMLSerializable {
         root.setAttribute("gridY", Integer.toString(gridY.get()));
         
         for (Argument argument : inputs) {
+            Element node = argument.serialize(doc);
+            root.appendChild(node);
+        }
+        
+        for (Argument argument : outputs) {
             Element node = argument.serialize(doc);
             root.appendChild(node);
         }

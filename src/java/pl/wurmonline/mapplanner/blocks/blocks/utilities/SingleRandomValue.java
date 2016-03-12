@@ -13,10 +13,10 @@ public class SingleRandomValue extends BlockData {
     public SingleRandomValue() {
         super("Utilities/Generate single random value", 
                 new ArgumentData[] { 
-                    new RandomArgumentData("Random generator") }, 
+                    new RandomArgumentData("Random gen") }, 
                 new ArgumentData[] {
-                    new RandomArgumentData("The same generator"),
-                    new IntArgumentData("Single random integer", true)});
+                    new RandomArgumentData("The same gen"),
+                    new IntArgumentData("Random int", true)});
     }
 
     protected void execute(Object[] inputs, Argument[] outputs, ProgressProperty progress) {

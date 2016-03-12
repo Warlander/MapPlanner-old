@@ -1,5 +1,6 @@
 package pl.wurmonline.mapplanner.gui.nodes;
 
+import java.util.stream.Stream;
 import javafx.collections.FXCollections;
 
 import javafx.collections.ListChangeListener.Change;
@@ -21,11 +22,11 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
+import pl.wurmonline.mapplanner.blocks.Argument;
 import pl.wurmonline.mapplanner.blocks.Block;
 import pl.wurmonline.mapplanner.blocks.Blueprint;
 import pl.wurmonline.mapplanner.blocks.Blocks;
 import pl.wurmonline.mapplanner.gui.ContextMenuCreator;
-import pl.wurmonline.mapplanner.gui.MainPane;
 
 public final class BlueprintPane extends AnchorPane implements ContextMenuCreator {
     
@@ -63,6 +64,8 @@ public final class BlueprintPane extends AnchorPane implements ContextMenuCreato
                 change.getRemoved().forEach(this::removeBlock);
             }
         });
+        
+        blocksMap.values().forEach(block -> block.deserializeLinks());
     }
     
     private void requestContextMenu(ContextMenuEvent evt) {
@@ -151,7 +154,9 @@ public final class BlueprintPane extends AnchorPane implements ContextMenuCreato
 
             if (parent instanceof ArgumentNode) {
                 ArgumentNode arg = (ArgumentNode) parent;
-                arg.bind(start);
+                ArgumentNode guiInput = (start.getType() == ArgumentNode.Type.INPUT) ? start : arg;
+                ArgumentNode guiOutput = (start.getType() == ArgumentNode.Type.OUTPUT) ? start : arg;
+                guiInput.getArgument().setInput(guiOutput.getArgument());
             }
         };
         
@@ -186,6 +191,14 @@ public final class BlueprintPane extends AnchorPane implements ContextMenuCreato
     
     public BlueprintContainer getBlueprintContainer() {
         return blueprintContainer;
+    }
+    
+    public ArgumentNode lookupArgumentNode(Argument arg) {
+        return blocksMap.values().stream()
+                .flatMap(block -> Stream.concat(block.getInputsReadonly().stream(), block.getOutputsReadonly().stream()))
+                .filter(node -> node.getArgument() == arg)
+                .findAny()
+                .orElse(null);
     }
     
 }

@@ -3,7 +3,9 @@ package pl.wurmonline.mapplanner.gui.nodes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
@@ -30,6 +32,7 @@ import pl.wurmonline.mapplanner.blocks.blocks.SaveMap;
 import pl.wurmonline.mapplanner.gui.ContextMenuCreator;
 import pl.wurmonline.mapplanner.gui.FXUtils;
 import pl.wurmonline.mapplanner.gui.InputsPane;
+import pl.wurmonline.mapplanner.util.Log;
 
 public class BlockNode extends BorderPane implements ContextMenuCreator {
     
@@ -37,16 +40,20 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
     private final BlueprintPane root;
     
     private final Block block;
-    private final ArrayList<ArgumentNode> inputsList;
-    private final ArrayList<ArgumentNode> outputsList;
+    private final ObservableList<ArgumentNode> inputsList;
+    private final ObservableList<ArgumentNode> inputsListReadonly;
+    private final ObservableList<ArgumentNode> outputsList;
+    private final ObservableList<ArgumentNode> outputsListReadonly;
     
     private final VBox inputsBox;
     
     public BlockNode(BlueprintPane root, Block block) {
         this.root = root;
         this.block = block;
-        this.inputsList = new ArrayList<>();
-        this.outputsList = new ArrayList<>();
+        this.inputsList = FXCollections.observableArrayList();
+        this.inputsListReadonly = FXCollections.unmodifiableObservableList(inputsList);
+        this.outputsList = FXCollections.observableArrayList();
+        this.outputsListReadonly = FXCollections.unmodifiableObservableList(outputsList);
         
         setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE), new Insets(-BORDER_SIZE))));
         setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY.deriveColor(1, 1, 1, 0.7), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -96,6 +103,12 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
                 });
         
         setRight(outputsBox);
+    }
+    
+    void deserializeLinks() {
+        for (ArgumentNode input : inputsList) {
+            input.deserializeLinks();
+        }
     }
     
     final void updateAllLinks() {
@@ -178,8 +191,20 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
         }
     }
     
+    public ObservableList<ArgumentNode> getInputsReadonly() {
+        return inputsListReadonly;
+    }
+    
+    public ObservableList<ArgumentNode> getOutputsReadonly() {
+        return outputsListReadonly;
+    }
+    
     public Block getBlock() {
         return block;
+    }
+    
+    public String toString() {
+        return "GUI " + block.getTitle();
     }
     
 }

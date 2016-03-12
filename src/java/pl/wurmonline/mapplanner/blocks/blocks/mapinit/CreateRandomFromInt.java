@@ -15,7 +15,7 @@ public class CreateRandomFromInt extends BlockData {
                 new ArgumentData[] { 
                     new IntArgumentData("Seed", true, 1, Integer.MAX_VALUE) }, 
                 new ArgumentData[] {
-                    new RandomArgumentData("Random generator")});
+                    new RandomArgumentData("Random gen")});
     }
     
     protected void execute(Object[] inputs, Argument[] outputs, ProgressProperty progress) {

@@ -13,8 +13,8 @@ public class CreateMap extends BlockData {
     public CreateMap() {
         super("Map Init/Create empty map", 
                 new ArgumentData[] { 
-                    new IntArgumentData("Width (power of two)", true, 7, 15),
-                    new IntArgumentData("Height (power of two)", true, 7, 15)},
+                    new IntArgumentData("Width (2^x)", true, 7, 15),
+                    new IntArgumentData("Height (2^x)", true, 7, 15)},
                 new ArgumentData[] { 
                     new MapArgumentData("Map") });
     }

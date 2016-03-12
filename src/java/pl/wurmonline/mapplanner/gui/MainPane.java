@@ -1,12 +1,9 @@
 package pl.wurmonline.mapplanner.gui;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -228,7 +225,6 @@ public class MainPane extends BorderPane {
             Document doc = dBuilder.parse(fis);
             Blueprint blueprint = new Blueprint(doc);
             blueprintContainer.setBlueprint(blueprint);
-            Log.info(this, "Blueprint loaded.");
         } catch (SAXException | IOException | ParserConfigurationException ex) {
             Log.error(ex);
         }
@@ -237,7 +233,6 @@ public class MainPane extends BorderPane {
     private void handleSave() {
         try (OutputStream stream = new FileOutputStream("Test.mpbp")) {
             IOUtils.write(blueprintContainer.getBlueprint().serialize(), stream);
-            Log.info(this, "Blueprint saved.");
         } catch (ParserConfigurationException | TransformerException | IOException ex) {
             Log.error(ex);
         }

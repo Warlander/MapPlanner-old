@@ -9,6 +9,7 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import pl.wurmonline.mapplanner.util.Log;
 
 public final class Argument<T> implements XMLSerializable {
     
@@ -39,7 +40,7 @@ public final class Argument<T> implements XMLSerializable {
             setValue(value);
         }
         
-        createStateListener();
+        createListeners();
     }
     
     Argument(Block block, ArgumentData<T> data, Element root) {
@@ -70,7 +71,7 @@ public final class Argument<T> implements XMLSerializable {
         
         this.initialInputUUID = root.getAttribute("input");
         
-        createStateListener();
+        createListeners();
     }
     
     public void recreateLinks() {
@@ -80,8 +81,8 @@ public final class Argument<T> implements XMLSerializable {
         input.set(block.getBlueprint().lookupExternalInputs(initialInputUUID));
     }
     
-    private void createStateListener() {
-        this.state.addListener((observable, oldValue, newValue) -> {
+    private void createListeners() {
+        state.addListener((observable, oldValue, newValue) -> {
             switch (oldValue) {
                 case EXTERNAL:
                     if (input.get() != null) {
@@ -101,6 +102,15 @@ public final class Argument<T> implements XMLSerializable {
                 case PARAMETER:
                     block.getBlueprint().addProperty(this);
                     break;
+            }
+        });
+        
+        input.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                Log.info(this, "Linked with argument " + newValue.toString() + ".");
+            }
+            else {
+                Log.info(this, "Argument is no longer linked with anything.");
             }
         });
     }
@@ -184,7 +194,7 @@ public final class Argument<T> implements XMLSerializable {
     }
     
     public void setInput(Argument<T> value) {
-        if (value != null && (value.block == block || value == input.get())) {
+        if (value != null && (value.block == block)) {
             throw new IllegalArgumentException("Invalid recurrence: argument cannot point to another argument in the same block.");
         }
         input.set(value);
@@ -200,6 +210,10 @@ public final class Argument<T> implements XMLSerializable {
         }
         
         return editor;
+    }
+    
+    public String toString() {
+        return title.get() + ", " + id.toString();
     }
     
 }

@@ -1,6 +1,8 @@
 package pl.wurmonline.mapplanner.gui.nodes;
 
 import java.util.Timer;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -13,8 +15,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.CubicCurve;
 import pl.wurmonline.mapplanner.blocks.Argument;
 import static pl.wurmonline.mapplanner.GUIConstants.*;
+import pl.wurmonline.mapplanner.util.Log;
 
-public class ArgumentNode extends VBox {    
+public final class ArgumentNode extends VBox {    
     
     private final BlueprintPane root;
     private final BlockNode parent;
@@ -73,10 +76,22 @@ public class ArgumentNode extends VBox {
         this.setOnMousePressed((evt) -> {
             root.handleNewBind(this);
         });
+        
+        argument.inputProperty().addListener(new ChangeListener<Argument>() {
+            public void changed(ObservableValue<? extends Argument> observable, Argument oldValue, Argument newValue) {
+                bind(root.lookupArgumentNode(newValue));
+            }
+        });
+    }
+    
+    void deserializeLinks() {
+        if (argument.getInput() != null) {
+            bind(root.lookupArgumentNode(argument.getInput()));
+        }
     }
     
     public void bind(ArgumentNode arg) {
-        if (this.type == arg.type || this.parent == arg.parent || this.argument.getData().getClass() != arg.argument.getData().getClass()) {
+        if (arg == null || this.type == arg.type || this.parent == arg.parent || this.argument.getData().getClass() != arg.argument.getData().getClass()) {
             return;
         }
         
@@ -85,8 +100,6 @@ public class ArgumentNode extends VBox {
         
         this.boundArgument = arg;
         arg.boundArgument = this;
-        
-        guiInput.argument.setInput(guiOutput.argument);
         
         guiInput.getChildren().remove(guiInput.editor);
         
@@ -114,6 +127,8 @@ public class ArgumentNode extends VBox {
                 }
             }
         , 100);
+        
+        Log.info(this, "Linked with argument " + arg);
     }
     
     public void unbind() {
@@ -193,7 +208,7 @@ public class ArgumentNode extends VBox {
     }
     
     public String toString() {
-        return argument.getTitle();
+        return "GUI " + argument.toString();
     }
     
     public static enum Type {

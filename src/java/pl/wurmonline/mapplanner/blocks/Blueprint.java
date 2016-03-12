@@ -27,6 +27,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import pl.wurmonline.mapplanner.blocks.blocks.SaveMap;
+import pl.wurmonline.mapplanner.util.Log;
 
 public final class Blueprint {
     
@@ -67,6 +68,8 @@ public final class Blueprint {
     }
     
     public Blueprint(Document doc) {
+        Log.info(Blueprint.class, "Starting blueprint loading.");
+        
         Element root = (Element) doc.getElementsByTagName("blueprint").item(0);
         
         this.title = new SimpleStringProperty(root.getAttribute("title"));
@@ -102,9 +105,13 @@ public final class Blueprint {
         for (Block block : blocks) {
             block.recreateLinks();
         }
+        
+        Log.info(this, "Blueprint loaded.");
     }
     
     public String serialize() throws ParserConfigurationException, TransformerException {
+        Log.info(this, "Starting blueprint saving.");
+        
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.newDocument();
@@ -143,6 +150,8 @@ public final class Blueprint {
         StringWriter writer = new StringWriter();
         StreamResult result = new StreamResult(writer);
         transformer.transform(source, result);
+        
+        Log.info(this, "Blueprint saved.");
         
         return writer.getBuffer().toString();
     }
@@ -296,10 +305,13 @@ public final class Blueprint {
     public Argument lookupExternalInputs(String uuid) {
         return blocks.stream()
                 .flatMap((block) -> Stream.of(block.getOutputs()))
-                .peek((argument) -> System.out.println(argument.getId()))
                 .filter((argument) -> argument.getId().equals(uuid))
                 .findAny()
                 .orElse(null);
+    }
+    
+    public String toString() {
+        return title.get();
     }
     
 }

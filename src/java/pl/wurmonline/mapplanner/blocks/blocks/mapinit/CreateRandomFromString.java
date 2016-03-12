@@ -15,7 +15,7 @@ public class CreateRandomFromString extends BlockData {
                 new ArgumentData[] { 
                     new StringArgumentData("Seed", true) }, 
                 new ArgumentData[] {
-                    new RandomArgumentData("Random generator")});
+                    new RandomArgumentData("Random gen")});
     }
 
     protected void execute(Object[] inputs, Argument[] outputs, ProgressProperty progress) {

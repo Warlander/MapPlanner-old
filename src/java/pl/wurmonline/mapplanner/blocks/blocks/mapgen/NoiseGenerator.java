@@ -5,7 +5,6 @@ import pl.wurmonline.mapplanner.blocks.ArgumentData;
 import pl.wurmonline.mapplanner.blocks.BlockData;
 import pl.wurmonline.mapplanner.blocks.ProgressProperty;
 import pl.wurmonline.mapplanner.blocks.arguments.HeightmapArgumentData;
-import pl.wurmonline.mapplanner.blocks.arguments.IntArgumentData;
 import pl.wurmonline.mapplanner.blocks.arguments.RandomArgumentData;
 import pl.wurmonline.mapplanner.mapgen.Heightmap;
 import pl.wurmonline.mapplanner.mapgen.XORRandom;
@@ -16,7 +15,7 @@ public class NoiseGenerator extends BlockData {
         super("Map Gen/Random noise", 
                 new ArgumentData[] { 
                     new HeightmapArgumentData("Heightmap"),
-                    new RandomArgumentData("Random") },
+                    new RandomArgumentData("Random gen") },
                 new ArgumentData[] { 
                     new HeightmapArgumentData("Heightmap") });
     }
@@ -27,7 +26,7 @@ public class NoiseGenerator extends BlockData {
         
         for (int i = 0; i < heightmap.getWidth(); i++) {
             for (int i2 = 0; i2 < heightmap.getHeight(); i2++) {
-                heightmap.setHeight(i, i2, (short) (rand.nextLong() % Short.MAX_VALUE));
+                heightmap.setHeight(i, i2, rand.nextShort());
             }
         }
         

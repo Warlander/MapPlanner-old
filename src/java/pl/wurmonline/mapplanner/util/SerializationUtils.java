@@ -1,7 +1,7 @@
 package pl.wurmonline.mapplanner.util;
 
 import java.lang.annotation.Annotation;
-import pl.wurmonline.mapplanner.blocks.Identifier;
+import pl.wurmonline.mapplanner.model.Identifier;
 
 public class SerializationUtils {
     

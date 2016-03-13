@@ -1,6 +1,6 @@
 package pl.wurmonline.mapplanner;
 
-import pl.wurmonline.mapplanner.gui.MainPane;
+import pl.wurmonline.mapplanner.view.MainPane;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

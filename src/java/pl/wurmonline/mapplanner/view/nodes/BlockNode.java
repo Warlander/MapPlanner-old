@@ -47,8 +47,6 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
     
     private final VBox inputsBox;
     
-    private final ProgressBar progressBar;
-    
     public BlockNode(BlueprintPane root, Block block) {
         this.root = root;
         this.block = block;
@@ -72,8 +70,9 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
             updateAllLinks();
         });
         
-        progressBar = new ProgressBar();
+        ProgressBar progressBar = new ProgressBar();
         progressBar.setScaleY(0.5);
+        progressBar.setScaleX(0.9);
         progressBar.progressProperty().bind(block.progressProperty());
         setBottom(progressBar);
         

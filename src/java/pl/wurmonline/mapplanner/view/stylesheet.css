@@ -9,3 +9,8 @@
 .gui-button:pressed {
     -fx-background-color: lightsteelblue;
 }
+
+.progress-bar > .track {
+  -fx-text-box-border: blue;
+  -fx-control-inner-background: lightblue;
+}

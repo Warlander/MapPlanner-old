@@ -43,7 +43,7 @@ public final class BlueprintPane extends AnchorPane implements ContextMenuCreato
         blueprint = blueprintContainer.getBlueprint();
         blocksMap = FXCollections.observableHashMap();
         
-        BackgroundImage background = new BackgroundImage(new Image(BlueprintPane.class.getResourceAsStream("/pl/wurmonline/mapplanner/gui/background.png")),
+        BackgroundImage background = new BackgroundImage(new Image(BlueprintPane.class.getResourceAsStream("/pl/wurmonline/mapplanner/view/background.png")),
             BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         setBackground(new Background(background));
         

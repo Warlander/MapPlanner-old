@@ -21,7 +21,7 @@ public class Main extends Application {
         MainPane root = new MainPane();
         
         Scene scene = new Scene(root, 800, 600);
-        scene.getStylesheets().add(Main.class.getResource("gui/stylesheet.css").toExternalForm());
+        scene.getStylesheets().add(Main.class.getResource("view/stylesheet.css").toExternalForm());
         
         primaryStage.setScene(scene);
         

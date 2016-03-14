@@ -10,6 +10,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -46,6 +47,8 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
     
     private final VBox inputsBox;
     
+    private final ProgressBar progressBar;
+    
     public BlockNode(BlueprintPane root, Block block) {
         this.root = root;
         this.block = block;
@@ -68,6 +71,11 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
         title.addEventHandler(MouseEvent.MOUSE_DRAGGED, (MouseEvent evt) -> {
             updateAllLinks();
         });
+        
+        progressBar = new ProgressBar();
+        progressBar.setScaleY(0.5);
+        progressBar.progressProperty().bind(block.progressProperty());
+        setBottom(progressBar);
         
         inputsBox = new VBox(2);
         block.getExternalInputsReadonly().stream()

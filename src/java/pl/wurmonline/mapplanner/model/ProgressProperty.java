@@ -15,7 +15,7 @@ public final class ProgressProperty extends SimpleDoubleProperty {
             Thread.currentThread().interrupt();
         }
         
-        value = Math.min(0, Math.max(value, 1));
+        value = Math.max(0, Math.min(value, 1));
         super.set(value);
     }
     

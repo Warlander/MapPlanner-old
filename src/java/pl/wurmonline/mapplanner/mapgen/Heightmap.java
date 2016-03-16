@@ -48,6 +48,14 @@ public class Heightmap {
         return height;
     }
     
+    public int getWidthLevel() {
+        return widthLevel;
+    }
+    
+    public int getHeightLevel() {
+        return heightLevel;
+    }
+    
     public BufferedImage createDump() {
         return createDump(heightLevel);
     }

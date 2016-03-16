@@ -109,10 +109,10 @@ public final class BlueprintPane extends AnchorPane implements ContextMenuCreato
         newBindCurve.setStroke(Color.BLACK);
         newBindCurve.setStrokeWidth(3);
         newBindCurve.setFill(null);
-        newBindCurve.setStartX(start.localToScene(new Point2D(0, 0)).getX() + start.getCircleX() - getLayoutX() - getParent().getLayoutX());
-        newBindCurve.setStartY(start.localToScene(new Point2D(0, 0)).getY() + start.getCircleY() - getLayoutY() - getParent().getLayoutY());
-        newBindCurve.setEndX(start.localToScene(new Point2D(0, 0)).getX() + start.getCircleX() - getLayoutX() - getParent().getLayoutX());
-        newBindCurve.setEndY(start.localToScene(new Point2D(0, 0)).getY() + start.getCircleY() - getLayoutY() - getParent().getLayoutY());
+        newBindCurve.startXProperty().bind(start.getCircleBindingX());
+        newBindCurve.startYProperty().bind(start.getCircleBindingY());
+        newBindCurve.setEndX(newBindCurve.getStartX());
+        newBindCurve.setEndY(newBindCurve.getEndY());
         newBindCurve.setControlX1(newBindCurve.getEndX());
         newBindCurve.setControlY1(newBindCurve.getStartY());
 

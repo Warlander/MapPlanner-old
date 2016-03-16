@@ -1,9 +1,9 @@
 package pl.wurmonline.mapplanner.view.nodes;
 
 import java.util.Timer;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -24,6 +24,8 @@ public final class ArgumentNode extends VBox {
     
     private final Node editor;
     private final Circle circle;
+    private final DoubleBinding circleBindingX;
+    private final DoubleBinding circleBindingY;
     
     private final Argument argument;
     private final Type type;
@@ -52,13 +54,20 @@ public final class ArgumentNode extends VBox {
             
         Region reg = new Region();
 
+        Label argName = new Label();
+        argName.textProperty().bind(argument.titleProperty());
+        
         circle = new Circle(CIRCLE_SIZE);
         circle.setFill(argument.getData().getGUIColor());
         circle.setStroke(Color.BLACK);
         circle.setStrokeWidth(CIRCLE_BORDER);
-
-        Label argName = new Label();
-        argName.textProperty().bind(argument.titleProperty());
+        if (type == Type.INPUT) {
+            circleBindingX = circle.layoutXProperty().add(layoutXProperty()).add(parent.translateXProperty());
+        }
+        else {
+            circleBindingX = parent.widthProperty().add(parent.translateXProperty()).subtract(CIRCLE_SIZE * 2);
+        }
+        circleBindingY = circle.layoutYProperty().add(layoutYProperty()).add(parent.translateYProperty()).add(parent.titleHeightProperty());
 
         if (type == Type.INPUT) {
             box.getChildren().addAll(reg, circle, argName);
@@ -171,20 +180,10 @@ public final class ArgumentNode extends VBox {
         ArgumentNode guiInput = (type == Type.INPUT) ? this : boundArgument;
         ArgumentNode guiOutput = (type == Type.OUTPUT) ? this : boundArgument;
         
-        double panelX = parent.getPanel().getLayoutX();
-        double panelY = parent.getPanel().getLayoutY();
-        double parentX = parent.getPanel().getParent().getLayoutX();
-        double parentY = parent.getPanel().getParent().getLayoutY();
-        double layoutX = panelX + parentX;
-        double layoutY = panelY + parentY;
-        
-        Point2D inputCircle = guiInput.localToScene(new Point2D(guiInput.getCircleX() - layoutX, guiInput.getCircleY() - layoutY));
-        Point2D outputCircle = guiOutput.localToScene(new Point2D(guiOutput.getCircleX() - layoutX, guiOutput.getCircleY() - layoutY));
-        
-        bindCurve.setStartX(inputCircle.getX());
-        bindCurve.setStartY(inputCircle.getY());
-        bindCurve.setEndX(outputCircle.getX());
-        bindCurve.setEndY(outputCircle.getY());
+        bindCurve.startXProperty().bind(guiInput.circleBindingX);
+        bindCurve.startYProperty().bind(guiInput.circleBindingY);
+        bindCurve.endXProperty().bind(guiOutput.circleBindingX);
+        bindCurve.endYProperty().bind(guiOutput.circleBindingY);
     }
     
     public void destroy() {
@@ -199,12 +198,12 @@ public final class ArgumentNode extends VBox {
         return type;
     }
     
-    public double getCircleX() {
-        return circle.getLayoutX();
+    public DoubleBinding getCircleBindingX() {
+        return circleBindingX;
     }
     
-    public double getCircleY() {
-        return circle.getLayoutY();
+    public DoubleBinding getCircleBindingY() {
+        return circleBindingY;
     }
     
     public String toString() {

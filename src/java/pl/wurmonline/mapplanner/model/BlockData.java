@@ -53,16 +53,20 @@ public abstract class BlockData {
     private Argument[] parseArguments(Block block, NodeList serializationData, ArgumentData[] datas) {
         Argument[] arguments = new Argument[datas.length];
         
+        outer:
         for (int i = 0; i < datas.length; i++) {
             ArgumentData data = datas[i];
             String identifier = data.getIdentifier();
-            outer:
             for (int i2 = 0; i2 < serializationData.getLength(); i2++) {
                 Element node = (Element) serializationData.item(i2);
-                if (node.getAttribute("data").equals(identifier)) {
+                String xmlIdentifier = node.getAttribute("data");
+                if (xmlIdentifier.equals(identifier)) {
                     arguments[i] = new Argument(block, data, node);
                     continue outer;
                 }
+            }
+            
+            if (arguments[i] == null) {
                 arguments[i] = new Argument(block, data);
             }
         }

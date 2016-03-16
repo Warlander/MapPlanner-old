@@ -195,7 +195,8 @@ public final class Argument<T> implements XMLSerializable {
     
     public void setInput(Argument<T> value) {
         if (value != null && (value.block == block)) {
-            throw new IllegalArgumentException("Invalid recurrence: argument cannot point to another argument in the same block.");
+            Log.info(this, "Attempt to make circular dependence with " + value.toString());
+            return;
         }
         input.set(value);
     }

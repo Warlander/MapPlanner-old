@@ -1,8 +1,9 @@
 package pl.wurmonline.mapplanner.view.nodes;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -45,6 +46,8 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
     private final ObservableList<ArgumentNode> outputsList;
     private final ObservableList<ArgumentNode> outputsListReadonly;
     
+    private final ReadOnlyDoubleProperty titleHeightProperty;
+    
     private final VBox inputsBox;
     
     public BlockNode(BlueprintPane root, Block block) {
@@ -69,6 +72,7 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
         title.addEventHandler(MouseEvent.MOUSE_DRAGGED, (MouseEvent evt) -> {
             updateAllLinks();
         });
+        this.titleHeightProperty = title.heightProperty();
         
         ProgressBar progressBar = new ProgressBar();
         progressBar.setScaleY(0.5);
@@ -195,6 +199,10 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
                 return;
             }
         }
+    }
+    
+    protected ReadOnlyDoubleProperty titleHeightProperty() {
+        return titleHeightProperty;
     }
     
     public ObservableList<ArgumentNode> getInputsReadonly() {

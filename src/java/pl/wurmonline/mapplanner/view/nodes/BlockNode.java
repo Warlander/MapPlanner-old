@@ -77,6 +77,7 @@ public class BlockNode extends BorderPane implements ContextMenuCreator {
         ProgressBar progressBar = new ProgressBar();
         progressBar.setScaleY(0.5);
         progressBar.setScaleX(0.9);
+        progressBar.setMaxWidth(Double.MAX_VALUE);
         progressBar.progressProperty().bind(block.progressProperty());
         setBottom(progressBar);
         

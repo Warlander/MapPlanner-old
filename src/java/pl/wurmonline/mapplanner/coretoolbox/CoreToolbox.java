@@ -16,6 +16,7 @@ public class CoreToolbox {
         CORE_TOOLBOX = new Toolbox("MapPlanner Core", Constants.VERSION_NUMBER);
         //mapgen
         register(NoiseGenerator.class);
+        register(FractalNoiseGenerator.class);
         
         //mapinit
         register(CreateHeightmap.class);

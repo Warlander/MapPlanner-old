@@ -4,14 +4,12 @@ import pl.wurmonline.mapplanner.view.MainPane;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import pl.wurmonline.mapplanner.mapgen.Heightmap;
 import pl.wurmonline.mapplanner.util.Log;
 
 public class Main extends Application {
 
     public static void main(String[] args) {
         Log.info(Main.class, "Initializing main application window");
-        
         launch(args);
     }
     

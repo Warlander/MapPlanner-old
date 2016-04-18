@@ -198,11 +198,12 @@ public class MainPane extends BorderPane {
     private HBox createImageView(String iconDir, Runnable action) {
         Image image = new Image(getClass().getResourceAsStream(iconDir));
         ImageView imageView = new ImageView(image);
-        imageView.setOnMouseClicked((MouseEvent evt) -> action.run());
+        imageView.setMouseTransparent(true);
         
         HBox wrapper = new HBox();
         wrapper.getStyleClass().add("gui-button");
         wrapper.getChildren().add(imageView);
+        wrapper.setOnMouseClicked((MouseEvent evt) -> action.run());
         
         return wrapper;
     }

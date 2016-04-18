@@ -17,7 +17,7 @@ public class NoiseLayer {
         this.layerWidth = (mapWidth / scale) + 1;
         this.layerHeight = (mapHeight / scale) + 1;
         this.scale = scale;
-        this.importance = importance;
+        this.importance = 1.0 / (1 << importance);
         
         this.data = new short[layerWidth][layerHeight];
     }
@@ -73,7 +73,7 @@ public class NoiseLayer {
         double h1 = h01 * (1 - interXRatio) + h11 * interXRatio;
         double h = h0 * (1 - interYRatio) + h1 * interYRatio;
         
-        return (short) (h / importance);
+        return (short) (h * importance);
     } 
     
 }

@@ -67,6 +67,10 @@ public final class Argument<T> implements XMLSerializable {
                     this.value = value;
                 }
             }
+            
+            if (state.get() == ArgumentState.PARAMETER) {
+                block.getBlueprint().addProperty(this);
+            }
         }
         
         this.initialInputUUID = root.getAttribute("input");

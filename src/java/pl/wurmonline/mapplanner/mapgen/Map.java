@@ -10,9 +10,9 @@ public class Map {
     private final int width;
     private final int height;
     
-    private final Heightmap caveMap;
-    private final Heightmap rockMap;
-    private final Heightmap surfaceMap;
+    private final Heightmap caveHeightmap;
+    private final Heightmap rockHeightmap;
+    private final Heightmap surfaceHeightmap;
     
     private final byte[] surfaceType;
     private final byte[] surfaceData;
@@ -25,9 +25,9 @@ public class Map {
         this.width = 1 << widthLevel;
         this.height = 1 << heightLevel;
         
-        this.caveMap = new Heightmap(widthLevel, heightLevel);
-        this.rockMap = new Heightmap(widthLevel, heightLevel);
-        this.surfaceMap = new Heightmap(widthLevel, heightLevel);
+        this.caveHeightmap = new Heightmap(widthLevel, heightLevel);
+        this.rockHeightmap = new Heightmap(widthLevel, heightLevel);
+        this.surfaceHeightmap = new Heightmap(widthLevel, heightLevel);
         
         final int arraySize = width * height;
         this.surfaceType = new byte[arraySize];
@@ -50,19 +50,19 @@ public class Map {
     }
     
     public void setSurfaceHeight(int x, int y, short height) {
-        surfaceMap.setHeight(x, y, height);
+        surfaceHeightmap.setHeight(x, y, height);
     }
     
     public short getSurfaceHeight(int x, int y) {
-        return surfaceMap.getHeight(x, y);
+        return surfaceHeightmap.getHeight(x, y);
     }
     
     public void setRockHeight(int x, int y, short height) {
-        rockMap.setHeight(x, y, height);
+        rockHeightmap.setHeight(x, y, height);
     }
     
     public short getRockHeight(int x, int y) {
-        return rockMap.getHeight(x, y);
+        return rockHeightmap.getHeight(x, y);
     }
     
     public void setCaveType(int x, int y, Tile tileType) {
@@ -82,11 +82,11 @@ public class Map {
     }
     
     public void setCaveHeight(int x, int y, short height) {
-        caveMap.setHeight(x, y, height);
+        caveHeightmap.setHeight(x, y, height);
     }
     
     public short getCaveHeight(int x, int y) {
-        return caveMap.getHeight(x, y);
+        return caveHeightmap.getHeight(x, y);
     }
     
     public int getWidth() {
@@ -95,6 +95,18 @@ public class Map {
     
     public int getHeight() {
         return height;
+    }
+
+    public Heightmap getCaveHeightmap() {
+        return caveHeightmap;
+    }
+
+    public Heightmap getRockHeightmap() {
+        return rockHeightmap;
+    }
+
+    public Heightmap getSurfaceHeightmap() {
+        return surfaceHeightmap;
     }
     
 }

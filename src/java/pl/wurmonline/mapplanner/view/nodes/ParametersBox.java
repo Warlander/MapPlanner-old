@@ -46,6 +46,8 @@ public class ParametersBox extends VBox {
         emptyLabel.setAlignment(Pos.CENTER);
         emptyLabel.setFont(Font.font("Arial", 10));
         getChildren().add(emptyLabel);
+        
+        blueprint.getPropertiesReadonly().forEach(this::addParameter);
     }
     
     private void addParameter(Argument arg) {

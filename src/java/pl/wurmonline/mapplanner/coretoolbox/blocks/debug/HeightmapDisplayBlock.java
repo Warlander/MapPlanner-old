@@ -6,25 +6,27 @@ import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import pl.wurmonline.mapplanner.coretoolbox.arguments.MapArgumentData;
+import pl.wurmonline.mapplanner.mapgen.Heightmap;
 import pl.wurmonline.mapplanner.model.Argument;
 import pl.wurmonline.mapplanner.model.ArgumentData;
 import pl.wurmonline.mapplanner.model.BlockData;
 import pl.wurmonline.mapplanner.model.ProgressProperty;
-import pl.wurmonline.mapplanner.coretoolbox.arguments.HeightmapArgumentData;
-import pl.wurmonline.mapplanner.mapgen.Heightmap;
+import pl.wurmonline.mapplanner.mapgen.Map;
 
 public class HeightmapDisplayBlock extends BlockData {
     
     public HeightmapDisplayBlock() {
         super("Debug/Heightmap display",
                 new ArgumentData[] { 
-                    new HeightmapArgumentData("In") }, 
+                    new MapArgumentData("In") }, 
                 new ArgumentData[] { 
-                    new HeightmapArgumentData("Out") });
+                    new MapArgumentData("Out") });
     }
     
     protected void execute(Object[] inputs, Argument[] outputs, ProgressProperty progress) {
-        Heightmap arg1 = (Heightmap) inputs[0];
+        Map arg1 = (Map) inputs[0];
+        Heightmap heightmap = arg1.getRockHeightmap();
         
         Application.invokeLater(() -> {
             Stage stage = new Stage();
@@ -32,7 +34,7 @@ public class HeightmapDisplayBlock extends BlockData {
             AnchorPane pane = new AnchorPane();
             pane.setPrefSize(512, 512);
 
-            ImageView img = new ImageView(SwingFXUtils.toFXImage(arg1.createDump(9), null));
+            ImageView img = new ImageView(SwingFXUtils.toFXImage(heightmap.createDump(9), null));
             img.setFitWidth(512);
             img.setFitHeight(512);
             

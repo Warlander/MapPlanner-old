@@ -1,5 +1,6 @@
 package pl.wurmonline.mapplanner.view.nodes;
 
+import com.sun.glass.ui.Application;
 import java.util.stream.Stream;
 import javafx.collections.FXCollections;
 
@@ -65,7 +66,7 @@ public final class BlueprintPane extends AnchorPane implements ContextMenuCreato
             }
         });
         
-        blocksMap.values().forEach(block -> block.deserializeLinks());
+        Application.invokeLater(() -> blocksMap.values().forEach(block -> block.deserializeLinks()));
     }
     
     private void requestContextMenu(ContextMenuEvent evt) {

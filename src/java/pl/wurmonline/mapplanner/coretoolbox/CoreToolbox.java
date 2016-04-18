@@ -15,11 +15,9 @@ public class CoreToolbox {
     static {
         CORE_TOOLBOX = new Toolbox("MapPlanner Core", Constants.VERSION_NUMBER);
         //mapgen
-        register(NoiseGenerator.class);
         register(FractalNoiseGenerator.class);
         
         //mapinit
-        register(CreateHeightmap.class);
         register(CreateMap.class);
         register(CreateRandomFromInt.class);
         register(CreateRandomFromString.class);
@@ -32,7 +30,6 @@ public class CoreToolbox {
         
         //testing/debug
         registerDebug(AddBlock.class);
-        registerDebug(DummyConventer.class);
         registerDebug(HeightmapDisplayBlock.class);
     }
     

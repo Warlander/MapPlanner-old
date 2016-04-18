@@ -14,7 +14,7 @@ public class Log {
     
     private static void info(Object object, Class clazz, String message) {
         StringBuilder build = new StringBuilder();
-        build.append("[").append(Instant.now().toString()).append("] ");
+        build.append("[").append(Instant.now().toString().replaceFirst("T", " ").replaceFirst("Z", "")).append("] ");
         build.append("{").append(clazz.getSimpleName()).append("} ");
         if (object != null) {
             build.append("(").append(object.toString()).append(") ");

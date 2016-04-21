@@ -165,6 +165,7 @@ public final class Argument<T> implements XMLSerializable {
         if (data.isAlwaysExternal()) {
             return;
         }
+        state.set(value);
     }
     
     public ArgumentState getState() {

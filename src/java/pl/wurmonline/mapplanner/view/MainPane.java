@@ -34,7 +34,7 @@ import pl.wurmonline.mapplanner.view.nodes.BlueprintContainer;
 
 public class MainPane extends BorderPane {
     
-    private BlueprintContainer blueprintContainer;
+    private final BlueprintContainer blueprintContainer;
     
     public MainPane() {
         Blueprint blueprint = new Blueprint();
@@ -216,7 +216,7 @@ public class MainPane extends BorderPane {
     }
     
     private void handleNewProject() {
-        
+        blueprintContainer.setBlueprint(new Blueprint());
     }
     
     private void handleOpen() {
@@ -260,7 +260,7 @@ public class MainPane extends BorderPane {
     }
     
     private void handleStop() {
-        
+        blueprintContainer.getBlueprint().cancelExecution();
     }
     
     private void handleOpenOptions() {

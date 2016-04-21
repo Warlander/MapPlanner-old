@@ -115,6 +115,11 @@ public final class Block implements XMLSerializable {
         
         Log.info(this, "Inputs ready, preparing for execution");
         
+        if (!blueprint.isExecuting()) {
+            resetState();
+            return;
+        }
+        
         Object[] in = Arrays.stream(inputs).map((Argument arg) -> arg.getValue()).toArray();
         
         try {
@@ -129,12 +134,17 @@ public final class Block implements XMLSerializable {
             Log.info(this, "Semaphore released");
         } catch (InterruptedException ex) {
             Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalStateException ex) {
+            Log.info(data, "Forcefully aborted execution");
+        } catch (Exception ex) {
+            Log.info(data, "Aborted execution due to error");
+            Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     private void waitForExecution() {
         synchronized (executionLock) {
-            if (executed) {
+            if (executed || !blueprint.isExecuting()) {
                 return;
             }
             

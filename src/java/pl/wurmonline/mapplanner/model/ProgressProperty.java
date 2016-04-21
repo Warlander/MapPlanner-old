@@ -11,12 +11,15 @@ public final class ProgressProperty extends SimpleDoubleProperty {
     }
     
     public void set(double value) {
-        if (!parentBlock.getBlueprint().isExecuting()) {
-            Thread.currentThread().interrupt();
+        if (!shouldContinue()) {
+            throw new IllegalStateException("Blueprint no longer running");
         }
-        
         value = Math.max(0, Math.min(value, 1));
         super.set(value);
+    }
+    
+    public boolean shouldContinue() {
+        return parentBlock.getBlueprint().isExecuting();
     }
     
 }

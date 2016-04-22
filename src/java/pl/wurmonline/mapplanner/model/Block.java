@@ -113,12 +113,13 @@ public final class Block implements XMLSerializable {
                 .filter((externalInput) -> externalInput.getInput() != null)
                 .forEach((externalInput) -> externalInput.getInput().getBlock().waitForExecution());
         
-        Log.info(this, "Inputs ready, preparing for execution");
-        
         if (!blueprint.isExecuting()) {
+            Log.info(this, "Aborting execution");
             resetState();
             return;
         }
+        
+        Log.info(this, "Inputs ready, preparing for execution");
         
         Object[] in = Arrays.stream(inputs).map((Argument arg) -> arg.getValue()).toArray();
         
@@ -135,9 +136,9 @@ public final class Block implements XMLSerializable {
         } catch (InterruptedException ex) {
             Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalStateException ex) {
-            Log.info(data, "Forcefully aborted execution");
+            Log.info(this, "Forcefully aborted execution");
         } catch (Exception ex) {
-            Log.info(data, "Aborted execution due to error");
+            Log.info(this, "Aborted execution due to error");
             Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

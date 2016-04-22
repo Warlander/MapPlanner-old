@@ -11,7 +11,7 @@ public final class ProgressProperty extends SimpleDoubleProperty {
     }
     
     public void set(double value) {
-        if (!shouldContinue()) {
+        if (!shouldContinue() && value != 0) {
             throw new IllegalStateException("Blueprint no longer running");
         }
         value = Math.max(0, Math.min(value, 1));
